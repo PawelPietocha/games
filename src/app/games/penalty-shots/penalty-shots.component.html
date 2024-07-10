@@ -1,0 +1,17 @@
+<app-default-game-template 
+    [gameState]="gameState"
+    [pausedGameDisabled]="true"
+    (gameReRunned)="reRun()" 
+    (gameStarted)="startGame()"
+    (pausedGame)="pausedGame()"
+    (leavedGame)="leavedGame()"
+    (movedToexitToSettings)="exitToSettings()">
+    <app-slider [max]="maxShotPower" [(sliderValue)]="shotPower" [name]="'Siła strzału'"></app-slider>
+    <app-slider [max]="maxGoalkeeperMovementSpeed" [(sliderValue)]="heroMovementSpeed"
+        [name]="'Prędkość bramkarza'"></app-slider>
+</app-default-game-template>
+
+<app-score-board class="scoreboard-on-canvas" *ngIf="gameState !== GameState.new" [homeScore]="succesfullyAtempts"
+    [guestScore]="failedAtempts">
+</app-score-board>
+

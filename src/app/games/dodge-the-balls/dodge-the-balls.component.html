@@ -1,0 +1,20 @@
+<app-default-game-template 
+    [gameState]="gameState" 
+    [class]="'dodge-the-balls-canvas'" 
+    (gameReRunned)="reRun()"
+    (pausedGame)="pausedGame()"
+    (leavedGame)="leavedGame()"
+    (gameStarted)="startGame()"
+    [pausedGameDisabled]="true" 
+    (movedToexitToSettings)="exitToSettings()">
+    <app-slider [max]="maxHeroMovementSpeed" [(sliderValue)]="heroMovementSpeed"
+        [name]="'Szybkość gracza'"></app-slider>
+    <app-slider [max]="maxOponentsMovementSpeedForSlider" [(sliderValue)]="maxOponentsMovementSpeedSettedByUser"
+        [name]="'Maksymalna szybkość przeciwników'"></app-slider>
+    <app-slider [max]="maxOponentRadiusForSlider" [(sliderValue)]="maxOponentRadiusSettedByUser"
+        [name]="'Maksymalna wielkość przeciwników'"></app-slider>
+</app-default-game-template>
+
+<app-score-board class="scoreboard-under-canvas" *ngIf="gameState !== GameState.new" [homeScore]="succesfullyAtempts"
+[isJustPlayerScore]="true">
+</app-score-board>

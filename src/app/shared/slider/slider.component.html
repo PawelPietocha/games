@@ -1,0 +1,12 @@
+<mat-card class="example-result-card">
+    <mat-card-content>
+
+        <div class="slider">
+            <label id="example-name-label" class="example-name-label">{{name}}: </label>
+            <label class="example-value-label">{{ballSlider.value}}</label>
+        </div>
+        <mat-slider class="example-margin" [max]="max" [min]="min" [step]="step">
+            <input matSliderThumb [(ngModel)]="sliderValue" (valueChange)="sliderValueChange.emit(sliderValue)" #ballSlider>
+        </mat-slider>
+    </mat-card-content>
+</mat-card>

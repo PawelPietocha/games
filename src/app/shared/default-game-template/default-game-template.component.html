@@ -1,0 +1,25 @@
+<canvas [ngClass]="gameState !== GameState.new? 'game-running': ''" tabindex='1' class="game {{class}}" id="game">
+</canvas>
+
+<div *ngIf="gameState === GameState.new" class="buttons">
+    <button *ngIf="!startGameDisabled" class="stylized-button" role="button" (click)="startGame()">Wystartuj
+        grę</button>
+    <ng-content></ng-content>
+</div>
+
+<div *ngIf="gameState === GameState.finished" class="buttons">
+    <button class="stylized-button" role="button" (click)="reRun()">{{getReRunLabel()}}</button>
+    <button class="stylized-button" role="button" (click)="exitToSettings()">Wyjdź do ustawień</button>
+</div>
+
+<ng-content></ng-content>
+
+<div *ngIf="gameState !== GameState.new" class="actions-buttons">
+    <button *ngIf="!pausedGameDisabled && (gameState === GameState.running || gameState === GameState.paused)"  (click)="pauseGame()" class="leave-icon stylized-button">
+        <mat-icon *ngIf="gameState === GameState.running" aria-hidden="false" aria-label="Example home icon" fontIcon="pause"></mat-icon>
+        <mat-icon *ngIf="gameState === GameState.paused"  aria-hidden="false" aria-label="Example home icon" fontIcon="play_arrow"></mat-icon>
+    </button>
+    <button (click)="leaveGame()" class="leave-icon stylized-button">
+        <mat-icon aria-hidden="false" aria-label="Example home icon" fontIcon="clear"></mat-icon>
+    </button>
+</div>

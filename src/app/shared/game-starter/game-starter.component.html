@@ -1,0 +1,8 @@
+<div class="content">
+  <div class="test">
+    <div class="content-item name">{{game.name | uppercase}}</div>
+    <video loop autoplay [muted]="'muted'" class="content-item obraz" [src]="game.source">
+    </video>
+    <button class="content-item stylized-button footer" (click)="start()">Start</button>
+  </div>
+</div>

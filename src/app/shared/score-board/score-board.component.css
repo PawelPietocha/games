@@ -1,0 +1,9 @@
+.scoreboardContent {
+    display: flex;
+    flex-direction: row;
+    gap: 30px;
+    font-size: 26px;
+    color: white;
+    font-weight: 600;
+    background-color: black;
+  }

@@ -1,0 +1,41 @@
+<div class="panel">
+    <div class="evolve">
+        <div *ngIf="currentPokemonForm !== pokemonForms.finalForm" class="text">Next evolve</div>
+        <img [src]="getNextHeroSrc()">
+        <div class="text">
+            <div *ngIf="currentPokemonForm !== pokemonForms.finalForm">Next bonus</div>
+            <div>{{getBoostName()}}</div>
+        </div>
+        <img [src]="getBoostSrc()">
+    </div>
+    <div class="divider"></div>
+    <div class="pokeballs">
+        <div class="text">Collect to evolve</div>
+        <img 
+        *ngFor="let _ of [].constructor(3); index as i"
+        [ngClass]="{'greyOut': shouldPokeballBeGreyOut(i+1)}" 
+        class="img" src="assets/Pokemons/other-images/pokeball.png">
+    </div>
+    <div class="divider"></div>
+    <div class="level-time-score">
+        <div>Level</div>
+        <div>:</div>
+        <div>{{level}}</div>
+    </div>
+    <div class="divider"></div>
+    <div class="level-time-score">
+        <div>Time to go</div>
+        <div>{{time | number}}</div>
+    </div>
+    <div class="divider"></div>
+    <div class="bullet-count">
+        <img [src]="getCoinOrBulletSrc()">
+        <div>x</div>
+        <div>{{catchedCoinCount}}</div>
+    </div>
+    <div class="divider"></div>
+    <div class="level-time-score">
+        <div>Score</div>
+        <div>{{score}}</div>
+    </div>
+</div>

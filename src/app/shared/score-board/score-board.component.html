@@ -1,0 +1,16 @@
+<mat-card *ngIf="!isJustPlayerScore">
+    <mat-card-content class="scoreboardContent">
+        <div>{{homeName}}</div>
+        <div>{{homeScore}}</div>
+        <div> : </div>
+        <div>{{guestScore}}</div>
+        <div>{{guestName}}</div>
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card *ngIf="isJustPlayerScore">
+    <mat-card-content class="scoreboardContent">
+        <div>{{homeName}}</div>
+        <div>{{homeScore}}</div>
+    </mat-card-content>
+  </mat-card>

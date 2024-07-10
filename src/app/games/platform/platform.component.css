@@ -1,0 +1,19 @@
+.choose-pokemon {
+    display: flex;
+    flex-direction: row;
+}
+
+.choose-pokemon img {
+    width: 80%;
+    height: 80%;
+}
+
+.flex-row img {
+    width: 80%;
+    height: 80%;
+}
+
+.mek {
+    display: flex;
+    flex-direction: column;
+}

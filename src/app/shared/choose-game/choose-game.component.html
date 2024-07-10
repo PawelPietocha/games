@@ -1,0 +1,7 @@
+<div class="choose-game" *ngIf="games">
+    <mat-grid-list cols="2" rowHeight="2.2:1">
+        <mat-grid-tile  *ngFor="let game of games">
+            <app-game-starter class="game-starter" [game]="game"></app-game-starter>
+        </mat-grid-tile>
+    </mat-grid-list>
+</div>

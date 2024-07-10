@@ -1,0 +1,21 @@
+<app-default-game-template 
+    [class]="'platform'" 
+    [gameState]="gameState" 
+    (gameReRunned)="reRun()"
+    (gameStarted)="startGame()"
+    (pausedGame)="pausedGame()"
+    (leavedGame)="leavedGame()" 
+    [levelOfGame]="level"
+    [startGameDisabled]="chosenPokemonName === pokemonToChoose.notChoosed" 
+    (movedToexitToSettings)="exitToSettings()">
+    <div class="choose-pokemon" *ngIf="gameState === GameState.new">
+        <app-pokemon-to-choose-template *ngFor="let pokemon of pokemonToChooseArray" [pokemon]="pokemon"
+            [greyOut]="chosenPokemonName !== pokemon" (clicked)="onChoosePokemon($event)">
+        </app-pokemon-to-choose-template>
+    </div>
+</app-default-game-template>
+<app-pokemon-panel *ngIf="gameState !== GameState.new" [currentPokemonForm]="pokemonHero.currentPokemonForm"
+    [pokemonSource]="pokemonHero.pokemonSource" [catchedCoinCount]="weapon.bulletCount"
+    [catchedPokeballsCount]="pokemonCounter.catchedPokeballsCount" [score]="pokemonCounter.score" [time]="time"
+    [level]="level">
+</app-pokemon-panel>

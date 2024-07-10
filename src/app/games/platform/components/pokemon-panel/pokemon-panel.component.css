@@ -1,0 +1,77 @@
+.panel {
+    width: calc(98% - 4px);
+    height: 9vh;
+    background-color: rgb(233, 227, 227);
+    margin: auto;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    background-color: 80D9FF;
+    border: 2px solid black;
+}
+
+.evolve {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    flex: 3;
+}
+
+.text {
+    display: flex;
+    flex-direction: column;
+    font-weight: bold;
+    margin: auto;
+}
+
+.pokeballs {
+    display: flex;
+    flex-direction: row;
+    flex: 3;
+    justify-content: space-evenly;
+}
+
+img {
+    height: 90%;
+    margin: auto;
+}
+
+.level-time-score {
+    display: flex;
+    flex-direction: row;
+    font-weight: bold;
+    gap: 10px;
+    flex: 1;
+    justify-content: center;
+    align-items: center;
+}
+
+.bullet-count {
+    display: flex;
+    flex-direction: row;
+    font-weight: bold;
+    flex: 1;
+    align-items: center;
+    justify-content: left;
+}
+
+.bullet-count img {
+    flex: 1;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    margin-left: 10%;
+}
+
+.bullet-count div {
+    flex: 1;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.divider {
+    border-left: 1px solid #38546d;
+    border-right: 1px solid #16222c;
+    height: 100%;
+}
