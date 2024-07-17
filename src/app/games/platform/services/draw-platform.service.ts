@@ -6,7 +6,6 @@ import { PlatformGradientValues } from "../models/platform-gradient-values";
 import { ImageForCanvas } from "../../../models/imageForCanvas";
 import { Viewport } from "../../../models/viewPort";
 import { RotateImageForCanvas } from "../../../models/rotate-image-for-canvas";
-import { Point } from "../../../models/point";
 import { PokemonHero } from "../../../models/pokemon-hero";
 import { OponentEnum } from "../models/oponent-enum";
 import { KoffingOponent } from "../models/koffing-oponent";
@@ -64,7 +63,7 @@ export class DrawPlaftormService {
         rectangles.forEach(rectangle => {
             if (this.isRectangleOnViewPort(rectangle)) {
                 if (entryGradient) {
-                    let gradient = this.getLinearGradient(rectangle, entryGradient);
+                    const gradient = this.getLinearGradient(rectangle, entryGradient);
                     this.drawService.drawLinearGradientRectangle(this.ctx, rectangle, gradient);
                 }
                 else {
@@ -108,8 +107,8 @@ export class DrawPlaftormService {
     }
 
     isImageOnViewPort(image: ImageForCanvas): boolean {
-        let leftSide = image.point.width - image.width / 2;
-        let rightSide = image.point.width + image.width / 2;
+        const leftSide = image.point.width - image.width / 2;
+        const rightSide = image.point.width + image.width / 2;
 
         return leftSide < this.viewPort.maxWidth && rightSide > this.viewPort.minWidth
     }
@@ -119,8 +118,8 @@ export class DrawPlaftormService {
     }
 
     isRectangleOnViewPort(rectangle: FilledRectangle): boolean {
-        let leftSide = rectangle.startPoint.width
-        let rightSide = rectangle.startPoint.width + rectangle.width;
+        const leftSide = rectangle.startPoint.width
+        const rightSide = rectangle.startPoint.width + rectangle.width;
 
         return leftSide < this.viewPort.maxWidth && rightSide > this.viewPort.minWidth
     }
@@ -133,7 +132,7 @@ export class DrawPlaftormService {
         const gradient = this.ctx.createLinearGradient(
             platform.startPoint.width, platform.startPoint.height,
             platform.startPoint.width, platform.startPoint.height + platform.height);
-        let ratio = gradientValues.higherColorHeight / platform.height;
+        const ratio = gradientValues.higherColorHeight / platform.height;
         gradient.addColorStop(0, gradientValues.higherColor);
         gradient.addColorStop(ratio, gradientValues.lowerColor);
         return gradient;

@@ -12,7 +12,7 @@ export class PokemonSource {
     bulletSrc: string;
     constructor(basicName: PokemonToChoose) {
         this.basicName = basicName;
-        let basicSrc = 'assets/Pokemons/' + basicName.toString() + '/';
+        const basicSrc = 'assets/Pokemons/' + basicName.toString() + '/';
         this.basicFormSrcRight = basicSrc + '1' + '.png';
         this.basicFormSrcLeft = basicSrc + '1l' + '.png';
         this.middleFormSrcRight = basicSrc + '2' + '.png';

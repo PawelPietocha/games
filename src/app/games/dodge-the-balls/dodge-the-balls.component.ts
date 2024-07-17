@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { DrawService } from '../../services/draw.service';
 import { MathService } from '../../services/math.service';
 import { MoveService } from '../../services/move.service';
@@ -20,9 +20,9 @@ import { GameState } from '../../models/gameState';
   templateUrl: './dodge-the-balls.component.html',
   styleUrl: './dodge-the-balls.component.css'
 })
-export class DodgeTheBallsComponent extends GameComponent {
+export class DodgeTheBallsComponent extends GameComponent implements OnDestroy{
   oponents: ImageForCanvas[] = [];
-  oponentsInterval: any;
+  oponentsInterval: string | number | NodeJS.Timeout;
 
   maxHeroMovementSpeed = 30;
 
@@ -32,7 +32,7 @@ export class DodgeTheBallsComponent extends GameComponent {
   maxOponentRadiusForSlider = 72;
   maxOponentRadiusSettedByUser = 36;
 
-  scoreInterval: any;
+  scoreInterval: string | number | NodeJS.Timeout;
 
   constructor(
     private drawService: DrawService,
@@ -99,12 +99,12 @@ export class DodgeTheBallsComponent extends GameComponent {
   }
 
   private addOponent() {
-    let oponentHeight = MathService.getRandomInteger(1, this.maxOponentRadiusSettedByUser) * 2;
-    let point = {
+    const oponentHeight = MathService.getRandomInteger(1, this.maxOponentRadiusSettedByUser) * 2;
+    const point = {
       width: this.canvas.width + oponentHeight * 2,
       height: this.hero.point.height
     };
-    let oponent = new RotateImageForCanvas(
+    const oponent = new RotateImageForCanvas(
       "assets/dodge/asteroid.png",
       point,
       oponentHeight,
@@ -122,8 +122,8 @@ export class DodgeTheBallsComponent extends GameComponent {
   }
 
   private runOponent(): void {
-    let oponent = this.oponents[this.oponents.length - 1];
-    let speed = MathService.getRandomInteger(1, this.maxOponentsMovementSpeedSettedByUser);
+    const oponent = this.oponents[this.oponents.length - 1];
+    const speed = MathService.getRandomInteger(1, this.maxOponentsMovementSpeedSettedByUser);
     this.moveService.runInConstHeightFromLeftToRightWithInfinityLoop(10, oponent, this.canvas.width, speed, this.gameState);
   }
 

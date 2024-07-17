@@ -20,7 +20,6 @@ import { ControlKey } from '../../models/controlKey';
 import { RotateImageForCanvas } from '../../models/rotate-image-for-canvas';
 import { ImageForCanvas } from '../../models/imageForCanvas';
 import { Point } from '../../models/point';
-import { GameState } from '../../models/gameState';
 
 @Component({
   selector: 'app-penalty-shots',
@@ -136,8 +135,8 @@ export class PenaltyShotsComponent extends GameComponent implements OnInit {
   }
 
   private drawField() {
-    let count = this.canvas.height / this.downPlatform.height
-    for (var i = 2; i < count + 2; i++) {
+    const count = this.canvas.height / this.downPlatform.height
+    for (let i = 2; i < count + 2; i++) {
       if (i % 2 === 0) {
         this.drawService.drawFilledRectangle(this.ctx,
           new FilledRectangle({ width: 0, height: this.canvas.height - i * this.downPlatform.height },
@@ -182,7 +181,7 @@ export class PenaltyShotsComponent extends GameComponent implements OnInit {
   }
 
   private runShooter() {
-    let tangentPoint: Point = {
+    const tangentPoint: Point = {
       width: this.penaltyPoint.point.width + this.ballImg.width / 2,
       height: this.penaltyPoint.point.height - this.ballImg.height / 2
     }
@@ -192,20 +191,19 @@ export class PenaltyShotsComponent extends GameComponent implements OnInit {
 
   private startBall() {
     this.shouldBallRotate = true;
-    let generatedRandomWidthInGoal = MathService.getRandomInteger(this.goalBars.pointA.width, this.goalBars.pointD.width);
-    let endPoint = {
+    const generatedRandomWidthInGoal = MathService.getRandomInteger(this.goalBars.pointA.width, this.goalBars.pointD.width);
+    const endPoint = {
       width: generatedRandomWidthInGoal,
       height: this.goalBars.pointB.height
     };
     this.moveService
-      .simpleRunFromAToB
-      (this.convertShotPowerToRefreshInterval(
+      .simpleRunFromAToB(this.convertShotPowerToRefreshInterval(
         this.maxShotPower, this.shotPower), endPoint, this.ballImg, () => { });
   }
 
   private convertShotPowerToRefreshInterval(maxValue: number, shotPower: number): number {
-    let average = maxValue / 2;
-    let diffrence = shotPower - average;
+    const average = maxValue / 2;
+    const diffrence = shotPower - average;
     return average - diffrence;
   }
 

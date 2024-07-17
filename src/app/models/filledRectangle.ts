@@ -30,7 +30,7 @@ export class FilledRectangle {
                 width: startPoint.width + width / 2,
                 height: startPoint.height + height / 2
             };
-        };
+        }
 
         this.color = color;
     }

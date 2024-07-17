@@ -7,7 +7,7 @@
     (leavedGame)="leavedGame()" 
     (movedToexitToSettings)="exitToSettings()">
 </app-default-game-template>
-<app-score-board *ngIf="activeBoost != null" class="scoreboard-under-canvas" 
+<app-score-board *ngIf="activeBoost !== null" class="scoreboard-under-canvas" 
 [homeName]="getBonusItemNameToDisplay(activeBoost)" 
 [homeScore]="timeToEndActiveBoost | number"
 [isJustPlayerScore]="true">

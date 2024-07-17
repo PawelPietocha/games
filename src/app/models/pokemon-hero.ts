@@ -13,7 +13,7 @@ export class PokemonHero extends ImageForCanvas {
     constructor(src: string, point: Point, width: number, height: number, pokemonSource: PokemonSource, canvas?: HTMLCanvasElement, visible: boolean = true) {
         super(src, point, width, height, canvas, visible);
         this.pokemonSource = pokemonSource;
-    };
+    }
 
     changeHeroLookDirection(toLeft: boolean) {
         if (this.shouldChangeDirection(toLeft)) {

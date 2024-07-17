@@ -1,6 +1,4 @@
 <div class="flex-column">
-    <img 
-    [ngClass]="{'greyOut': greyOut}"
-        [src]='getBasicFormSrc()'>
+    <img [ngClass]="{'greyOut': greyOut}" [src]='getBasicFormSrc()' alt="pokemon">
     <button class="stylized-button" (click)="onClick()">{{pokemon}}</button>
 </div>

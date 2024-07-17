@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { GameComponent } from '../../shared/game/game.component';
 import { DefaultGameTemplateComponent } from '../../shared/default-game-template/default-game-template.component';
 import { FilledRectangle } from '../../models/filledRectangle';
@@ -38,7 +38,7 @@ import { Router } from '@angular/router';
   templateUrl: './platform.component.html',
   styleUrl: './platform.component.css'
 })
-export class PlatformComponent extends GameComponent {
+export class PlatformComponent extends GameComponent implements OnDestroy {
 
   pokemonHero: PokemonHero;
 
@@ -57,9 +57,9 @@ export class PlatformComponent extends GameComponent {
   chosenPokemonName = PokemonToChoose.notChoosed;
   pokemonToChooseArray: PokemonToChoose[];
 
-  shotInterval: any;
-  timeInterval: any;
-  gameInterval: any;
+  shotInterval: string | number | NodeJS.Timeout;
+  timeInterval: string | number | NodeJS.Timeout;
+  gameInterval: string | number | NodeJS.Timeout;
 
   pokemonCounter: PokemonCounter = new PokemonCounter();
 
@@ -138,7 +138,7 @@ export class PlatformComponent extends GameComponent {
   }
 
   conditionToEndMainInterval(): boolean {
-    let heroFellDown = this.hero.point.height >= 0.96 * this.canvas.height;
+    const heroFellDown = this.hero.point.height >= 0.96 * this.canvas.height;
     if (this.isHeroReachedFinish()) {
       clearInterval(this.controlInterval);
     }
@@ -150,7 +150,7 @@ export class PlatformComponent extends GameComponent {
 
     this.pokemonHero.changeHeroLookDirection(false);
 
-    let heroCollissionWithPlatform = this.platforms.some(platform =>
+    const heroCollissionWithPlatform = this.platforms.some(platform =>
       this.mathService.isImageAndRectangleTangleFromLeftRectangleSide(this.pokemonHero, platform)
     )
     if (!heroCollissionWithPlatform && this.isHeroOnCenterOfViewPort()) {
@@ -164,7 +164,7 @@ export class PlatformComponent extends GameComponent {
 
     this.pokemonHero.changeHeroLookDirection(true);
 
-    let isHeroCollisionWithPlatform = this.platforms.some(platform =>
+    const isHeroCollisionWithPlatform = this.platforms.some(platform =>
       this.mathService.isImageAndRectangleTangleFromRightRectangleSide(this.pokemonHero, platform)
     )
 
@@ -172,11 +172,11 @@ export class PlatformComponent extends GameComponent {
   }
 
   override shouldEndFallDownInterval(): boolean {
-    let isCollisionWithPlatform = this.platforms.some(platform =>
+    const isCollisionWithPlatform = this.platforms.some(platform =>
       this.mathService.isImageAndRectangleTangleFromTopSide(this.pokemonHero, platform)
     );
 
-    let collisionWithGround = this.grounds.some(ground =>
+    const collisionWithGround = this.grounds.some(ground =>
       this.mathService.isImageAndRectangleTangleFromTopSide(this.pokemonHero, ground)
     )
     return isCollisionWithPlatform || collisionWithGround
@@ -197,14 +197,14 @@ export class PlatformComponent extends GameComponent {
     this.weapon.shouldBulletGoingRight = this.pokemonHero.looksRight;
 
     this.startBullet();
-
+    
     this.shotInterval = setInterval(() => {
 
       if (this.isBulletHitPlatform()) {
         this.clearBullet();
       }
 
-      let isBulletHitOponent = this.isBulletHitOponent();
+      const isBulletHitOponent = this.isBulletHitOponent();
 
       if (isBulletHitOponent.hit) {
         isBulletHitOponent.oponent.visible = false;
@@ -271,7 +271,7 @@ export class PlatformComponent extends GameComponent {
   }
 
   private coinFunction() {
-    let catchedCoin = this.coins
+    const catchedCoin = this.coins
       .find(coin =>
         coin.visible &&
         this.mathService.isTwoImagesToClose(this.pokemonHero, coin))
@@ -283,7 +283,7 @@ export class PlatformComponent extends GameComponent {
   }
 
   private pokeballFunction() {
-    let catchedPokeball = this.pokeballs.find(pokeball =>
+    const catchedPokeball = this.pokeballs.find(pokeball =>
       this.mathService.isTwoImagesToClose(this.pokemonHero, pokeball) && pokeball.visible
 
     )
@@ -431,8 +431,7 @@ export class PlatformComponent extends GameComponent {
   }
 
   private isBulletHitPlatform(): boolean {
-    return this.platforms.some
-      (platform => this.mathService.isImageAndRectangleTangleFromLeftRectangleSide(this.weapon, platform) ||
+    return this.platforms.some(platform => this.mathService.isImageAndRectangleTangleFromLeftRectangleSide(this.weapon, platform) ||
         this.mathService.isImageAndRectangleTangleFromRightRectangleSide(this.weapon, platform))
   }
 
@@ -457,7 +456,7 @@ export class PlatformComponent extends GameComponent {
   }
 
   private isBulletHitOponent(): { hit: boolean, oponent?: PlatformOponent } {
-    let oponentToKill = this.oponents.find(oponent => oponent.visible && this.mathService.isTwoImagesToClose(oponent, this.weapon))
+    const oponentToKill = this.oponents.find(oponent => oponent.visible && this.mathService.isTwoImagesToClose(oponent, this.weapon))
     if (oponentToKill) {
       this.pokemonCounter.score += this.gameHelperService.collectScore(ScoreCollector.killOponent);
       return { hit: true, oponent: oponentToKill }

@@ -56,7 +56,7 @@ export class InitPlatformService {
     }
 
     initHeroValue(chosenPokemonName: PokemonToChoose): PokemonHero {
-        let pokemonSource = this.initPokemonSource(chosenPokemonName);
+        const pokemonSource = this.initPokemonSource(chosenPokemonName);
         return new PokemonHero(
             pokemonSource.basicFormSrcRight,
             {
@@ -71,9 +71,9 @@ export class InitPlatformService {
     }
 
     initGroundPlatformValues(): FilledRectangle[] {
-        let grounds: FilledRectangle[] = [];
+        const grounds: FilledRectangle[] = [];
         this.dynamicLevel.groundValues.forEach(ground => {
-            let newGround = this.createPlatform(
+            const newGround = this.createPlatform(
                 {
                     width: ground.startPointWidth,
                     height: ground.startPointHeightMultipier
@@ -98,9 +98,9 @@ export class InitPlatformService {
     }
 
     initWaterValues(): FilledRectangle[] {
-        let waters: FilledRectangle[] = [];
+        const waters: FilledRectangle[] = [];
         this.dynamicLevel.waterValues.forEach(water => {
-            let newWater = new FilledRectangle(
+            const newWater = new FilledRectangle(
                 {
                     width: water.startPointWidth,
                     height: water.startPointHeightMultipier
@@ -115,10 +115,10 @@ export class InitPlatformService {
     }
 
     initPlatformValues(): FilledRectangle[] {
-        let platforms: FilledRectangle[] = [];
+        const platforms: FilledRectangle[] = [];
 
         this.dynamicLevel.platformValues.forEach(platform => {
-            let newPlatform = this.createPlatform(
+            const newPlatform = this.createPlatform(
                 {
                     width: platform.startPointWidth,
                     height: platform.startPointHeightMultipier
@@ -131,16 +131,16 @@ export class InitPlatformService {
     }
 
     initCoins(): ImageForCanvas[] {
-        let coins: ImageForCanvas[] = [];
+        const coins: ImageForCanvas[] = [];
         this.dynamicLevel.platformValues.forEach(platform => {
-            let coinCreateHelper: ImageCreateHelper = {
+            const coinCreateHelper: ImageCreateHelper = {
                 src: this.dynamicLevel.globalCoinValues.src,
                 drawPointWidthMultiplier: platform.startPointWidth + platform.width / 2,
                 drawPointHeightMultiplier: platform.startPointHeightMultipier - 0.05,
                 widthMultiplier: this.dynamicLevel.globalCoinValues.widthMultiplier,
                 heightMultiplier: this.dynamicLevel.globalCoinValues.heightMultiplier
             }
-            let newCoin = this.createBasicImage(coinCreateHelper);
+            const newCoin = this.createBasicImage(coinCreateHelper);
             coins.push(newCoin);
         })
         return coins;
@@ -152,22 +152,22 @@ export class InitPlatformService {
     }
 
     initNonIntrusiveImages(): ImageForCanvas[] {
-        let nonIntrusiveImages: ImageForCanvas[] = [];
-        let clouds = this.getClouds();
+        const nonIntrusiveImages: ImageForCanvas[] = [];
+        const clouds = this.getClouds();
         nonIntrusiveImages.push(...clouds);
-        let trees = this.getTrees();
+        const trees = this.getTrees();
         nonIntrusiveImages.push(...trees);
         if (this.dynamicLevel.surfaceOfGround) {
-            let surfacesOfGround = this.getSurfaceOfGround();
+            const surfacesOfGround = this.getSurfaceOfGround();
             nonIntrusiveImages.push(...surfacesOfGround);
         }
         if (this.dynamicLevel.surfaceOfPlatform) {
-            let surfacesOfPlatform = this.getSurfaceOfPlatform();
+            const surfacesOfPlatform = this.getSurfaceOfPlatform();
             nonIntrusiveImages.push(...surfacesOfPlatform);
         }
-        let groundsInside = this.getGroundInside();
+        const groundsInside = this.getGroundInside();
         nonIntrusiveImages.push(...groundsInside);
-        let platformInside = this.getPlatformInside();
+        const platformInside = this.getPlatformInside();
         nonIntrusiveImages.push(...platformInside);
         return nonIntrusiveImages;
 
@@ -175,11 +175,11 @@ export class InitPlatformService {
     }
 
     getClouds(): ImageForCanvas[] {
-        let clouds: ImageForCanvas[] = [];
+        const clouds: ImageForCanvas[] = [];
         let actualWidth = this.dynamicLevel.cloudsValue.drawPointWidthMultiplier;
-        let countOfClouds = Math.floor(this.dynamicLevel.finishImage.drawPointWidthMultiplier / this.dynamicLevel.cloudsValue.repetableBreakBetween);
+        const countOfClouds = Math.floor(this.dynamicLevel.finishImage.drawPointWidthMultiplier / this.dynamicLevel.cloudsValue.repetableBreakBetween);
         for (let i = 1; i <= countOfClouds; i++) {
-            let cloud = new ImageForCanvas(
+            const cloud = new ImageForCanvas(
                 this.dynamicLevel.cloudsValue.src,
                 {
                     width: actualWidth,
@@ -195,9 +195,9 @@ export class InitPlatformService {
     }
 
     getSurfaceOfPlatform(): ImageForCanvas[] {
-        let surfacesOfPlatform: ImageForCanvas[] = [];
+        const surfacesOfPlatform: ImageForCanvas[] = [];
         this.dynamicLevel.platformValues.forEach(platform => {
-            let surface = new ImageForCanvas(
+            const surface = new ImageForCanvas(
                 this.dynamicLevel.surfaceOfPlatform.src,
                 {
                     width: platform.startPointWidth + platform.width / 2,
@@ -213,9 +213,9 @@ export class InitPlatformService {
     }
 
     getPlatformInside(): ImageForCanvas[] {
-        let platformInside: ImageForCanvas[] = [];
+        const platformInside: ImageForCanvas[] = [];
         this.dynamicLevel.platformValues.forEach(platform => {
-            let inside = new ImageForCanvas(
+            const inside = new ImageForCanvas(
                 this.dynamicLevel.groundInside.src,
                 {
                     width: platform.startPointWidth + platform.width / 2,
@@ -231,9 +231,9 @@ export class InitPlatformService {
     }
 
     getGroundInside(): ImageForCanvas[] {
-        let groundInside: ImageForCanvas[] = [];
+        const groundInside: ImageForCanvas[] = [];
         this.dynamicLevel.groundValues.forEach(ground => {
-            let inside = new ImageForCanvas(
+            const inside = new ImageForCanvas(
                 this.dynamicLevel.groundInside.src,
                 {
                     width: ground.startPointWidth + ground.width / 2,
@@ -249,13 +249,13 @@ export class InitPlatformService {
     }
 
     getSurfaceOfGround(): ImageForCanvas[] {
-        let surfacesOfGround: ImageForCanvas[] = [];
+        const surfacesOfGround: ImageForCanvas[] = [];
         this.dynamicLevel.groundValues.forEach(ground => {
-            let count = this.calculateHowManySurfaceImageCountInGround(ground.width, 0.2, 0.4);
-            let width = ground.width / count;
+            const count = this.calculateHowManySurfaceImageCountInGround(ground.width, 0.2, 0.4);
+            const width = ground.width / count;
             let actualWidth = ground.startPointWidth + width / 2;
             for (let i = 1; i <= count; i++) {
-                let surfaceOfGround = new ImageForCanvas(
+                const surfaceOfGround = new ImageForCanvas(
                     this.dynamicLevel.surfaceOfGround.src,
                     {
                         width: actualWidth,
@@ -273,9 +273,9 @@ export class InitPlatformService {
     }
 
     getTrees(): ImageForCanvas[] {
-        let trees: ImageForCanvas[] = [];
+        const trees: ImageForCanvas[] = [];
         this.dynamicLevel.treesValue.forEach(tree => {
-            let fullTree: ImageCreateHelper = {
+            const fullTree: ImageCreateHelper = {
                 src: this.dynamicLevel.treesGlobalValues.src,
                 widthMultiplier: this.dynamicLevel.treesGlobalValues.widthMultiplier,
                 heightMultiplier: this.dynamicLevel.treesGlobalValues.heightMultiplier,
@@ -289,13 +289,13 @@ export class InitPlatformService {
 
 
     initOponentsValues(): PlatformOponent[] {
-        let oponents: PlatformOponent[] = [];
+        const oponents: PlatformOponent[] = [];
 
 
         this.dynamicLevel.oponentsValues.forEach(oponent => {
             switch (oponent.oponentType) {
                 case OponentEnum.meowth: {
-                    let newOponent = new MeowthOponent(
+                    const newOponent = new MeowthOponent(
                         {
                             width: oponent.drawPointWidthMultiplier,
                             height: oponent.drawPointHeightMultiplier
@@ -307,7 +307,7 @@ export class InitPlatformService {
                     break;
                 }
                 case OponentEnum.koffing: {
-                    let newOponent = new KoffingOponent(
+                    const newOponent = new KoffingOponent(
                         {
                             width: oponent.drawPointWidthMultiplier,
                             height: oponent.drawPointHeightMultiplier
@@ -324,10 +324,10 @@ export class InitPlatformService {
     }
 
     initPokeballs(): ImageForCanvas[] {
-        let pokeballs: ImageForCanvas[] = [];
+        const pokeballs: ImageForCanvas[] = [];
 
         this.dynamicLevel.pokeballsValues.forEach(pokeball => {
-            let fullPokeball: ImageCreateHelper =
+            const fullPokeball: ImageCreateHelper =
             {
                 src: this.dynamicLevel.pokeballGlobalValues.src,
                 drawPointWidthMultiplier: pokeball.drawPointWidthMultiplier,
@@ -335,14 +335,14 @@ export class InitPlatformService {
                 widthMultiplier: this.dynamicLevel.pokeballGlobalValues.widthMultiplier,
                 heightMultiplier: this.dynamicLevel.pokeballGlobalValues.heightMultiplier
             }
-            let newPokeball = this.createBasicImage(fullPokeball);
+            const newPokeball = this.createBasicImage(fullPokeball);
             pokeballs.push(newPokeball);
         })
         return pokeballs;
     }
 
     initWeapon(chosenPokemonName: PokemonToChoose): PokemonWeapon {
-        let bulletSrc = this.dynamicLevel.pokemonSource.find(pokemon => pokemon.basicName === chosenPokemonName).bulletSrc;
+        const bulletSrc = this.dynamicLevel.pokemonSource.find(pokemon => pokemon.basicName === chosenPokemonName).bulletSrc;
         return new PokemonWeapon(
             bulletSrc,
             {
@@ -386,8 +386,8 @@ export class InitPlatformService {
     }
 
     private calculateHowManySurfaceImageCountInGround(groundWidth: number, minWidthOfImage: number, maxWidthOfImage: number): number {
-        let minCount = groundWidth / minWidthOfImage;
-        let maxCount = groundWidth / maxWidthOfImage;
+        const minCount = groundWidth / minWidthOfImage;
+        const maxCount = groundWidth / maxWidthOfImage;
         return Math.floor((minCount + maxCount) / 2);
     }
 }

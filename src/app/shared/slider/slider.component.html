@@ -2,8 +2,8 @@
     <mat-card-content>
 
         <div class="slider">
-            <label id="example-name-label" class="example-name-label">{{name}}: </label>
-            <label class="example-value-label">{{ballSlider.value}}</label>
+            <div id="example-name-label" class="example-name-label">{{name}}: </div>
+            <div class="example-value-label">{{ballSlider.value}}</div>
         </div>
         <mat-slider class="example-margin" [max]="max" [min]="min" [step]="step">
             <input matSliderThumb [(ngModel)]="sliderValue" (valueChange)="sliderValueChange.emit(sliderValue)" #ballSlider>

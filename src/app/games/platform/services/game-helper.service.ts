@@ -1,5 +1,4 @@
 import { Injectable } from "@angular/core";
-import { ImageForCanvas } from "../../../models/imageForCanvas";
 import { PokemonForms } from "../models/pokemon-forms";
 import { ScoreCollector } from "../models/score-collector.enum";
 import { PokemonSource } from "../models/pokemon-source";

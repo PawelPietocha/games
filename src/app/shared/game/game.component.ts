@@ -23,10 +23,10 @@ export abstract class GameComponent implements OnInit, OnDestroy {
 
   readonly dialog = inject(MatDialog);
 
-  mainInterval: any;
-  controlInterval: any;
-  jumpInterval: any;
-  fallDownInterval: any;
+  mainInterval: string | number | NodeJS.Timeout;
+  controlInterval: string | number | NodeJS.Timeout;
+  jumpInterval: string | number | NodeJS.Timeout;
+  fallDownInterval: string | number | NodeJS.Timeout;
 
   gameState: GameState = GameState.new;
   GameState = GameState;
@@ -155,7 +155,7 @@ export abstract class GameComponent implements OnInit, OnDestroy {
   private createCtx(): void {
     this.canvas = <HTMLCanvasElement>document.getElementById('game')!;
     this.ctx = this.canvas.getContext('2d')!;
-  };
+  }
 
   private createMainInterval(): void {
     this.mainInterval = setInterval(() => {
@@ -165,7 +165,7 @@ export abstract class GameComponent implements OnInit, OnDestroy {
       if (this.conditionToEndMainInterval()) {
         this.endRun();
         this.actionAfterEndRun();
-      };
+      }
       this.ctx?.clearRect(0, 0, this.canvas.width + this.canvasWidthShift, this.canvas.height);
       this.drawAll();
     }, 10);
@@ -209,7 +209,7 @@ export abstract class GameComponent implements OnInit, OnDestroy {
   }
 
   private isKeyClicked(controlKey: ControlKey): boolean {
-    let key = this.controlKeysState.find(key => key.controlKey === controlKey);
+    const key = this.controlKeysState.find(key => key.controlKey === controlKey);
     if (key) {
       return key.isClicked;
     }
@@ -222,7 +222,7 @@ export abstract class GameComponent implements OnInit, OnDestroy {
     switch (event.key) {
 
       case ControlKey.arrowUp: {
-        let arrowUp = this.controlKeysState.find(keyState => keyState.controlKey === ControlKey.arrowUp);
+        const arrowUp = this.controlKeysState.find(keyState => keyState.controlKey === ControlKey.arrowUp);
         if (arrowUp) {
           arrowUp.isClicked = false;
         }
@@ -230,7 +230,7 @@ export abstract class GameComponent implements OnInit, OnDestroy {
       }
 
       case ControlKey.arrowDown: {
-        let arrowDown = this.controlKeysState.find(keyState => keyState.controlKey === ControlKey.arrowDown);
+        const arrowDown = this.controlKeysState.find(keyState => keyState.controlKey === ControlKey.arrowDown);
         if (arrowDown) {
           arrowDown.isClicked = false;
         }
@@ -238,7 +238,7 @@ export abstract class GameComponent implements OnInit, OnDestroy {
       }
 
       case ControlKey.arrowRight: {
-        let arrowRight = this.controlKeysState.find(keyState => keyState.controlKey === ControlKey.arrowRight);
+        const arrowRight = this.controlKeysState.find(keyState => keyState.controlKey === ControlKey.arrowRight);
         if (arrowRight) {
           arrowRight.isClicked = false;
         }
@@ -246,7 +246,7 @@ export abstract class GameComponent implements OnInit, OnDestroy {
       }
 
       case ControlKey.arrowLeft: {
-        let arrowLeft = this.controlKeysState.find(keyState => keyState.controlKey === ControlKey.arrowLeft);
+        const arrowLeft = this.controlKeysState.find(keyState => keyState.controlKey === ControlKey.arrowLeft);
         if (arrowLeft) {
           arrowLeft.isClicked = false;
         }
@@ -254,7 +254,7 @@ export abstract class GameComponent implements OnInit, OnDestroy {
       }
 
       case ControlKey.space: {
-        let space = this.controlKeysState.find(keyState => keyState.controlKey === ControlKey.space);
+        const space = this.controlKeysState.find(keyState => keyState.controlKey === ControlKey.space);
         if (space) {
           space.isClicked = false;
         }
@@ -262,7 +262,7 @@ export abstract class GameComponent implements OnInit, OnDestroy {
       }
 
       case ControlKey.control: {
-        let control = this.controlKeysState.find(keyState => keyState.controlKey === ControlKey.control);
+        const control = this.controlKeysState.find(keyState => keyState.controlKey === ControlKey.control);
         if (control) {
           control.isClicked = false;
 
@@ -286,7 +286,7 @@ export abstract class GameComponent implements OnInit, OnDestroy {
     }
     switch (event.key) {
       case ControlKey.arrowUp: {
-        let arrowUp = this.controlKeysState.find(keyState => keyState.controlKey === ControlKey.arrowUp);
+        const arrowUp = this.controlKeysState.find(keyState => keyState.controlKey === ControlKey.arrowUp);
         if (arrowUp) {
           arrowUp.isClicked = true;
         }
@@ -294,7 +294,7 @@ export abstract class GameComponent implements OnInit, OnDestroy {
       }
 
       case ControlKey.arrowDown: {
-        let arrowDown = this.controlKeysState.find(keyState => keyState.controlKey === ControlKey.arrowDown);
+        const arrowDown = this.controlKeysState.find(keyState => keyState.controlKey === ControlKey.arrowDown);
         if (arrowDown) {
           arrowDown.isClicked = true;
         }
@@ -302,7 +302,7 @@ export abstract class GameComponent implements OnInit, OnDestroy {
       }
 
       case ControlKey.arrowRight: {
-        let arrowRight = this.controlKeysState.find(keyState => keyState.controlKey === ControlKey.arrowRight);
+        const arrowRight = this.controlKeysState.find(keyState => keyState.controlKey === ControlKey.arrowRight);
         if (arrowRight) {
           arrowRight.isClicked = true;
         }
@@ -310,7 +310,7 @@ export abstract class GameComponent implements OnInit, OnDestroy {
       }
 
       case ControlKey.arrowLeft: {
-        let arrowLeft = this.controlKeysState.find(keyState => keyState.controlKey === ControlKey.arrowLeft);
+        const arrowLeft = this.controlKeysState.find(keyState => keyState.controlKey === ControlKey.arrowLeft);
         if (arrowLeft) {
           arrowLeft.isClicked = true;
         }
@@ -318,7 +318,7 @@ export abstract class GameComponent implements OnInit, OnDestroy {
       }
 
       case ControlKey.space: {
-        let space = this.controlKeysState.find(keyState => keyState.controlKey === ControlKey.space);
+        const space = this.controlKeysState.find(keyState => keyState.controlKey === ControlKey.space);
         if (space) {
           space.isClicked = true;
           this.setJumpInterval();
@@ -327,7 +327,7 @@ export abstract class GameComponent implements OnInit, OnDestroy {
       }
 
       case ControlKey.control: {
-        let control = this.controlKeysState.find(keyState => keyState.controlKey === ControlKey.control);
+        const control = this.controlKeysState.find(keyState => keyState.controlKey === ControlKey.control);
         if (control) {
           control.isClicked = true;
           this.setControlKeyInterval();

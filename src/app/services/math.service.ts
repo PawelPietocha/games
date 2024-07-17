@@ -17,21 +17,19 @@ export class MathService {
 
     isTwoCirclesToClose(circle1: Circle, circle2: Circle): boolean {
         return Math
-            .sqrt
-            (Math.pow(circle1.point.width - circle2.point.width, 2)
+            .sqrt(Math.pow(circle1.point.width - circle2.point.width, 2)
                 + Math.pow(circle1.point.height - circle2.point.height, 2)) < circle1.radius + circle2.radius
     }
 
     isCircleAndImageToClose(circle: Circle, img: ImageForCanvas): boolean {
         return Math
-            .sqrt
-            (Math.pow(circle.point.width - img.point.width, 2)
+            .sqrt(Math.pow(circle.point.width - img.point.width, 2)
                 + Math.pow(circle.point.height - img.point.height, 2)) < circle.radius + img.width / 2;
     }
 
     isCircleAndRectangleToClose(circle: Circle, rectangle: FilledRectangle): boolean {
-        var distX = Math.abs(circle.point.width - rectangle.point.width);
-        var distY = Math.abs(circle.point.height - rectangle.point.height);
+        const distX = Math.abs(circle.point.width - rectangle.point.width);
+        const distY = Math.abs(circle.point.height - rectangle.point.height);
 
         if (distX > (rectangle.width / 2 + circle.radius)) { return false; }
         if (distY > (rectangle.height / 2 + circle.radius)) { return false; }
@@ -39,8 +37,8 @@ export class MathService {
     }
 
     isImageAndRectangleToClose(image: ImageForCanvas, rectangle: FilledRectangle): boolean {
-        var distX = Math.abs(image.point.width - rectangle.point.width);
-        var distY = Math.abs(image.point.height - rectangle.point.height);
+        const distX = Math.abs(image.point.width - rectangle.point.width);
+        const distY = Math.abs(image.point.height - rectangle.point.height);
 
         if (distX > (rectangle.width / 2 + image.width / 2)) { return false; }
         if (distY > (rectangle.height / 2 + image.height / 2)) { return false; }
@@ -48,8 +46,8 @@ export class MathService {
     }
 
     isTwoImagesToClose(image1: ImageForCanvas, image2: ImageForCanvas): boolean {
-        var distX = Math.abs(image1.point.width - image2.point.width);
-        var distY = Math.abs(image1.point.height - image2.point.height);
+        const distX = Math.abs(image1.point.width - image2.point.width);
+        const distY = Math.abs(image1.point.height - image2.point.height);
 
         if (distX > (image1.width / 2 + image2.width / 2)) { return false; }
         if (distY > (image1.height / 2 + image2.height / 2)) { return false; }

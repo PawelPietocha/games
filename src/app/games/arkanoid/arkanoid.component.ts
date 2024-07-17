@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { GameComponent } from '../../shared/game/game.component';
 import { DefaultGameTemplateComponent } from '../../shared/default-game-template/default-game-template.component';
 import { DrawService } from '../../services/draw.service';
@@ -23,10 +23,10 @@ import { Router } from '@angular/router';
   templateUrl: './arkanoid.component.html',
   styleUrl: './arkanoid.component.css'
 })
-export class ArkanoidComponent extends GameComponent {
+export class ArkanoidComponent extends GameComponent implements OnDestroy {
 
   ball: Circle;
-  ballInterval: any;
+  ballInterval: string | number | NodeJS.Timeout;
   ballBounceAngle = 90;
   isBallfallDown = true;
 
@@ -48,8 +48,8 @@ export class ArkanoidComponent extends GameComponent {
 
   activeBoost: BonusItem = null;
   timeToEndActiveBoost = 10;
-  activeBoostInterval: any;
-  supriseInterval: any;
+  activeBoostInterval: string | number | NodeJS.Timeout;
+  supriseInterval: string | number | NodeJS.Timeout;
 
   constructor(
     private drawService: DrawService,
@@ -100,7 +100,7 @@ export class ArkanoidComponent extends GameComponent {
   }
 
   private initHeroValues(): void {
-    let heroStartPoint =
+    const heroStartPoint =
     {
       width: this.canvas.width / 2 - 10,
       height: this.canvas.height - 5
@@ -132,7 +132,7 @@ export class ArkanoidComponent extends GameComponent {
 
   private initBlocks(): void {
     this.blocks = [];
-    let creator: ArkanoidBlockCreateHelper = {
+    const creator: ArkanoidBlockCreateHelper = {
       currentHeight: 0,
       countOfBlocksInFloor: 0,
       blocksWidth: 0,
@@ -152,8 +152,8 @@ export class ArkanoidComponent extends GameComponent {
   }
 
   private selectBonusItem(chance: number): BonusItem {
-    let countOfBonusItems = Object.keys(BonusItem).length / 2;
-    let lastIndexOfBonusItems = countOfBonusItems - 1;
+    const countOfBonusItems = Object.keys(BonusItem).length / 2;
+    const lastIndexOfBonusItems = countOfBonusItems - 1;
     if (Math.random() <= chance) {
       return MathService.getRandomInteger(0, lastIndexOfBonusItems);
     }
@@ -176,12 +176,12 @@ export class ArkanoidComponent extends GameComponent {
   }
 
   private generateArkanoidBlock(creator: ArkanoidBlockCreateHelper): ArkanoidBlock {
-    let rectangleStartPoint = {
+    const rectangleStartPoint = {
       width: creator.currentWidth,
       height: creator.currentHeight
     };
-    let rectangle = new FilledRectangle(rectangleStartPoint, creator.blocksWidth, creator.blockHeight, this.drawService.getRandomColor());
-    let bonusItem = this.selectBonusItem(0.5);
+    const rectangle = new FilledRectangle(rectangleStartPoint, creator.blocksWidth, creator.blockHeight, this.drawService.getRandomColor());
+    const bonusItem = this.selectBonusItem(0.5);
     return { rectangle: rectangle, visible: true, bonusItem: bonusItem };
   }
 
@@ -239,7 +239,7 @@ export class ArkanoidComponent extends GameComponent {
   }
 
   private actionAfterCollision(): void {
-    let block = this.blocks
+    const block = this.blocks
       .find(block => this.mathService.isCircleAndRectangleToClose(this.ball, block.rectangle) && block.visible);
 
     block.visible = false;
