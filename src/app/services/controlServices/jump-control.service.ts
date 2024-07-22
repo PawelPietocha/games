@@ -8,6 +8,7 @@ import { MoveableShape } from "../../models/shapes/moveable-shape";
     providedIn: 'root',
 })
 export class JumpControlService {
+
     private isJumping = false;
     private loopCount = 0;
     private maxJumpHeightLocal: number;

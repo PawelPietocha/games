@@ -24,10 +24,10 @@ import { GameState } from '../../models/gameState';
 import { KeyboardControlService } from '../../services/controlServices/keyboard-control.service';
 import { Globals } from '../../shared/globals';
 import { GameStateService } from '../../services/gameState.service';
-import { JumpControlService } from '../../services/controlServices/jump-control.service';
 import { FilledRectangle } from '../../models/shapes/filledRectangle';
 import { PokemonWeapon } from './models/pokemon-weapon';
-import { IJumping } from '../../models/interfaces/jumping';
+import { PokemonDataService } from './services/pokemon-data.service';
+import { PokemonJumpPrepareService } from './services/prepare-services/pokemon-jump-prepare.service';
 
 @Component({
   selector: 'app-platform',
@@ -42,7 +42,7 @@ import { IJumping } from '../../models/interfaces/jumping';
   templateUrl: './platform.component.html',
   styleUrl: './platform.component.css'
 })
-export class PlatformComponent extends GameComponent implements OnDestroy, IJumping {
+export class PlatformComponent extends GameComponent implements OnDestroy {
 
   pokemonHero: PokemonHero;
 
@@ -85,7 +85,8 @@ export class PlatformComponent extends GameComponent implements OnDestroy, IJump
     private gameHelperService: GameHelperService,
     private gameKeyboardControlService: KeyboardControlService,
     private gameGameStateService: GameStateService,
-    private jumpControlService: JumpControlService) {
+    private pokemonJumpPrepareService: PokemonJumpPrepareService,
+    private pokemonDataService: PokemonDataService) {
     super(gameKeyboardControlService, gameGameStateService);
     this.pokemonToChooseArray = this.initPlatformService.getPokemonToChoose();
     this.setKeyboardControlServiceSettings();
@@ -97,12 +98,6 @@ export class PlatformComponent extends GameComponent implements OnDestroy, IJump
     clearInterval(this.timeInterval);
     clearInterval(this.shotInterval);
 
-  }
-
-  prematureEndJumpInterval(): boolean {
-    return this.platforms.some(platform =>
-      this.mathService.isImageAndRectangleTangleFromDownSide(this.pokemonHero, platform)
-    )
   }
 
   initValues(): void {
@@ -118,7 +113,7 @@ export class PlatformComponent extends GameComponent implements OnDestroy, IJump
     this.pokemonHero = this.hero as PokemonHero;
     this.weapon = this.initPlatformService.initWeaponValue(this.chosenPokemonName);
     this.resetToDefaultValues(this.level);
-    this.setJumpControlServiceSettings();
+    this.pokemonJumpPrepareService.initJumpService(this.pokemonHero, this.heroMovementSpeed, this.maxJumpHeight);
   }
   initControlList(): void {
     this.controlKeyBoardKeys = this.initPlatformService.controlKeyBoardKey;
@@ -156,7 +151,7 @@ export class PlatformComponent extends GameComponent implements OnDestroy, IJump
   conditionToEndMainInterval(): boolean {
     const heroFellDown = this.hero.point.height >= 0.96 * this.canvasHelper.canvas.height;
     if (this.isHeroReachedFinish()) {
-//Zablokowanie ruchu
+      //Zablokowanie ruchu
     }
     return heroFellDown || this.loseGame || this.time === 0 || this.wonGame
   }
@@ -185,17 +180,6 @@ export class PlatformComponent extends GameComponent implements OnDestroy, IJump
     )
 
     return this.isHeroOnViewPort() && !isHeroCollisionWithPlatform;
-  }
-
-  preventFallingDown(): boolean {
-    const isCollisionWithPlatform = this.platforms.some(platform =>
-      this.mathService.isImageAndRectangleTangleFromTopSide(this.pokemonHero, platform)
-    );
-
-    const collisionWithGround = this.grounds.some(ground =>
-      this.mathService.isImageAndRectangleTangleFromTopSide(this.pokemonHero, ground)
-    )
-    return isCollisionWithPlatform || collisionWithGround
   }
 
   override setControlKeyInterval(): void {
@@ -506,13 +490,15 @@ export class PlatformComponent extends GameComponent implements OnDestroy, IJump
   }
 
   private initLevel(level: number) {
+    this.pokemonDataService.initLevel(level);
+    this.pokemonDataService.initData(this.canvasHelper.canvas, this.chosenPokemonName);
     this.initPlatformService.initLevel(level);
     this.time = this.initPlatformService.initTime();
-    this.grounds = this.initPlatformService.initGroundPlatformValues();
-    this.platforms = this.initPlatformService.initPlatformValues();
+    this.grounds = this.initPlatformService.initGround();
+    this.platforms = this.initPlatformService.initPlatforms();
     this.oponents = this.initPlatformService.initOponents();
     this.pokeballs = this.initPlatformService.initPokeballs();
-    this.waters = this.initPlatformService.initWaterValues();
+    this.waters = this.initPlatformService.initWater();
     this.finishImage = this.initPlatformService.initFinishImage();
     this.laser = this.initPlatformService.initLaser();
     this.coins = this.initPlatformService.initCoins();
@@ -525,17 +511,6 @@ export class PlatformComponent extends GameComponent implements OnDestroy, IJump
 
   private changeLevel() {
     this.level = this.wonGame ? 2 : 1;
-  }
-
-  private setJumpControlServiceSettings(): void {
-    this.jumpControlService.setPrematureEndJumpInterval(this.prematureEndJumpInterval.bind(this));
-    this.jumpControlService.maxJumpHeight = this.maxJumpHeight;
-    this.jumpControlService.isJumping$.subscribe(isJumping => { this.isJumping = isJumping });
-
-    this.jumpControlService.setConditionToPreventGravity(this.preventFallingDown.bind(this));
-    this.jumpControlService.isFallingDown$.subscribe(isFallingDown => this.isFallingDown = isFallingDown);
-    const gravityInterval = this.jumpControlService.setGravityInterval(this.hero, this.heroMovementSpeed);
-    this.intervals.push(gravityInterval);
   }
 
   private setKeyboardControlServiceSettings(): void {

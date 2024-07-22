@@ -1,15 +1,12 @@
 import { Injectable } from "@angular/core";
 import { ControlKey } from "../../../models/controlKey";
-import { ImageForCanvas } from "../../../models/shapes/imageForCanvas";
 import { PokemonToChoose } from "../models/pokemon-to-choose";
 import { BaseLevel } from "../levels/baseLevel";
 import { LevelOne } from "../levels/level-one";
 import { LevelTwo } from "../levels/level-two";
-import { PokemonHero } from "../models/pokemon-hero";
-import { FilledRectangle } from "../../../models/shapes/filledRectangle";
-import { PokemonWeapon } from "../models/pokemon-weapon";
 import { CreatePokemonHelperService } from "./create-pokemon-helper.service";
 import { ShapeCreateHelperService } from "../../../services/shape-create-helper.service";
+import { ImageForCanvas } from "../../../models/shapes/imageForCanvas";
 
 @Injectable({
     providedIn: 'root',
@@ -17,21 +14,10 @@ import { ShapeCreateHelperService } from "../../../services/shape-create-helper.
 
 export class InitPlatformService {
 
-    hero: PokemonHero;
-    ground: FilledRectangle[];
-    water: FilledRectangle[];
-    platforms: FilledRectangle[];
-    finishImage: ImageForCanvas;
-    pokeballs: ImageForCanvas[];
-    nonIntrusiveImages: ImageForCanvas[];
-    coins: ImageForCanvas[];
-    laser: ImageForCanvas;
-    weapon: PokemonWeapon;
-    oponents: ImageForCanvas[];
-
     readonly heroMovementSpeed = 3;
     readonly controlKeyBoardKey = [ControlKey.arrowLeft, ControlKey.arrowRight, ControlKey.space, ControlKey.control];
     private dynamicLevel: BaseLevel = new LevelOne();
+    nonIntrusiveImages: ImageForCanvas[] = [];
 
     constructor(private createPokemonHelperService: CreatePokemonHelperService,
         private shapeCreateHelperService: ShapeCreateHelperService) { }
@@ -67,24 +53,23 @@ export class InitPlatformService {
 
     initHeroValue(chosenPokemonName: PokemonToChoose) {
         this.createPokemonHelperService.dynamicLevel = new LevelOne();
-        this.hero = this.createPokemonHelperService.initHero(chosenPokemonName);
-        return this.hero;
+        return this.createPokemonHelperService.initHero(chosenPokemonName);
     }
 
     initWeaponValue(chosenPokemonName: PokemonToChoose) {
-        this.weapon = this.createPokemonHelperService.initWeapon(chosenPokemonName);
-        return this.weapon;
+        return this.createPokemonHelperService.initWeapon(chosenPokemonName);
+
     }
 
-    initGroundPlatformValues() {
+    initGround() {
         return this.shapeCreateHelperService.createFilledRectangleArray(this.dynamicLevel.groundValues, this.dynamicLevel.groundColor);
     }
 
-    initWaterValues() {
+    initWater() {
         return this.shapeCreateHelperService.createFilledRectangleArray(this.dynamicLevel.waterValues, this.dynamicLevel.waterColor);
     }
 
-    initPlatformValues() {
+    initPlatforms() {
         return this.shapeCreateHelperService.createFilledRectangleArray(this.dynamicLevel.platformValues, this.dynamicLevel.groundColor);
     }
 
@@ -138,18 +123,12 @@ export class InitPlatformService {
     }
 
     initNonIntrusiveImages() {
-      //  this.initGroundPlatformValues();
-      //  this.initWaterValues();
-      //  this.initPlatformValues();
-      //  this.initCoins();
-      //  this.initFinishImage();
         this.initClouds();
         this.initSurfaceOfPlatform();
         this.initPlatformInside();
         this.initGroundInside();
         this.initSurfaceOfGround();
         this.initTrees();
-      //  this.initOponents();
 
       return this.nonIntrusiveImages;
     }

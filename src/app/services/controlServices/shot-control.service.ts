@@ -26,9 +26,7 @@ export class ShotControlService {
 
         return new Interval(
             this.shotIntervalAction.bind(this),
-
         )
-
     }
 
     private isEnoughtAmunition(): boolean {
