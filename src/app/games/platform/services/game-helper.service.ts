@@ -2,7 +2,7 @@ import { Injectable } from "@angular/core";
 import { PokemonForms } from "../models/pokemon-forms";
 import { ScoreCollector } from "../models/score-collector.enum";
 import { PokemonSource } from "../models/pokemon-source";
-import { PokemonHero } from "../../../models/pokemon-hero";
+import { PokemonHero } from "../models/pokemon-hero";
 
 @Injectable({
     providedIn: 'root',

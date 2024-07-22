@@ -1,5 +1,5 @@
-import { ImageCreateHelper } from "../../../models/image-create-helper";
-import { RectangleCreateHelper } from "../../../models/rectangle-create-helper";
+import { ImageCreateHelper } from "../../../models/helpers/image-create-helper";
+import { RectangleCreateHelper } from "../../../models/helpers/rectangle-create-helper";
 import { OponentEnum } from "../models/oponent-enum";
 import { BaseLevel } from "./baseLevel";
 

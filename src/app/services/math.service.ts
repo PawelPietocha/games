@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
-import { Circle } from "../models/circle";
-import { ImageForCanvas } from "../models/imageForCanvas";
-import { FilledRectangle } from "../models/filledRectangle";
+import { Circle } from "../models/shapes/circle";
+import { ImageForCanvas } from "../models/shapes/imageForCanvas";
+import { FilledRectangle } from "../models/shapes/filledRectangle";
 
 @Injectable({
     providedIn: 'root',

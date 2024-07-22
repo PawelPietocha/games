@@ -1,8 +1,9 @@
-import { ImageCreateHelper } from "../../../models/image-create-helper";
+
 import { PlatformGradientValues } from "../models/platform-gradient-values";
 import { PokemonToChoose } from "../models/pokemon-to-choose";
-import { RectangleCreateHelper } from "../../../models/rectangle-create-helper";
+import { RectangleCreateHelper } from "../../../models/helpers/rectangle-create-helper";
 import { PokemonSource } from "../models/pokemon-source";
+import { ImageCreateHelper } from "../../../models/helpers/image-create-helper";
 
 export abstract class BaseLevel {
     heroInitValues: Omit<ImageCreateHelper, 'src'> =

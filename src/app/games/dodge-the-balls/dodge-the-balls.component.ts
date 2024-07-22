@@ -8,10 +8,12 @@ import { GameComponent } from '../../shared/game/game.component';
 import { DefaultGameTemplateComponent } from '../../shared/default-game-template/default-game-template.component';
 import { ControlKey } from '../../models/controlKey';
 import { ScoreBoardComponent } from '../../shared/score-board/score-board.component';
-import { ImageForCanvas } from '../../models/imageForCanvas';
-import { RotateImageForCanvas } from '../../models/rotate-image-for-canvas';
-import { Router } from '@angular/router';
+import { ImageForCanvas } from '../../models/shapes/imageForCanvas';
 import { GameState } from '../../models/gameState';
+import { KeyboardControlService } from '../../services/controlServices/keyboard-control.service';
+import { Globals } from '../../shared/globals';
+import { GameStateService } from '../../services/gameState.service';
+import { RotateImageForCanvas } from '../../models/shapes/rotate-image-for-canvas';
 
 @Component({
   selector: 'app-dodge-the-balls',
@@ -38,8 +40,9 @@ export class DodgeTheBallsComponent extends GameComponent implements OnDestroy{
     private drawService: DrawService,
     private moveService: MoveService,
     private mathService: MathService,
-    private gameRouter: Router) {
-    super(gameRouter);
+    private gameKeyboardControlService: KeyboardControlService,
+    private gameGameStateService: GameStateService) {
+    super(gameKeyboardControlService, gameGameStateService);
   }
 
   override ngOnDestroy(): void {
@@ -95,13 +98,13 @@ export class DodgeTheBallsComponent extends GameComponent implements OnDestroy{
       },
       0.05,
       0.15,
-      this.canvas);
+      this.canvasHelper.canvas);
   }
 
   private addOponent() {
     const oponentHeight = MathService.getRandomInteger(1, this.maxOponentRadiusSettedByUser) * 2;
     const point = {
-      width: this.canvas.width + oponentHeight * 2,
+      width: this.canvasHelper.canvas.width + oponentHeight * 2,
       height: this.hero.point.height
     };
     const oponent = new RotateImageForCanvas(
@@ -114,22 +117,22 @@ export class DodgeTheBallsComponent extends GameComponent implements OnDestroy{
   }
 
   private drawHero() {
-    this.drawService.drawImage(this.ctx, this.hero as ImageForCanvas);
+    this.drawService.drawImage(this.canvasHelper.ctx, this.hero as ImageForCanvas);
   }
 
   private drawOponents() {
-    this.oponents.forEach(oponent => this.drawService.drawRotateImage(this.ctx, oponent as RotateImageForCanvas));
+    this.oponents.forEach(oponent => this.drawService.drawRotateImage(this.canvasHelper.ctx, oponent as RotateImageForCanvas));
   }
 
   private runOponent(): void {
     const oponent = this.oponents[this.oponents.length - 1];
     const speed = MathService.getRandomInteger(1, this.maxOponentsMovementSpeedSettedByUser);
-    this.moveService.runInConstHeightFromLeftToRightWithInfinityLoop(10, oponent, this.canvas.width, speed, this.gameState);
+    this.moveService.runInConstHeightFromLeftToRightWithInfinityLoop(10, oponent, this.canvasHelper.canvas.width, speed, Globals.gameState);
   }
 
   private startOponentsRun(): void {
     this.oponentsInterval = setInterval(() => {
-      if(this.gameState === GameState.paused) {
+      if(Globals.gameState === GameState.paused) {
         return;
       }
       this.addOponent();
@@ -139,7 +142,7 @@ export class DodgeTheBallsComponent extends GameComponent implements OnDestroy{
 
   private createScoreInterval(): void {
     this.scoreInterval = setInterval(() => {
-      if(this.gameState === GameState.paused) {
+      if(Globals.gameState === GameState.paused) {
         return;
       }
       this.succesfullyAtempts += 1;

@@ -1,5 +1,5 @@
-import { ImageForCanvas } from "../../../models/imageForCanvas";
-import { Point } from "../../../models/point";
+import { ImageForCanvas } from "../../../models/shapes/imageForCanvas";
+import { Point } from "../../../models/shapes/point";
 import { OponentEnum } from "./oponent-enum";
 
 

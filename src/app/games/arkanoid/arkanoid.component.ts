@@ -2,19 +2,21 @@ import { Component, OnDestroy } from '@angular/core';
 import { GameComponent } from '../../shared/game/game.component';
 import { DefaultGameTemplateComponent } from '../../shared/default-game-template/default-game-template.component';
 import { DrawService } from '../../services/draw.service';
-import { FilledRectangle } from '../../models/filledRectangle';
-import { Point } from '../../models/point';
+import { Point } from '../../models/shapes/point';
 import { ControlKey } from '../../models/controlKey';
-import { Circle } from '../../models/circle';
+import { Circle } from '../../models/shapes/circle';
 import { MathService } from '../../services/math.service';
-import { BonusItem } from './bonusItem-arkanoid';
-import { ImageForCanvas } from '../../models/imageForCanvas';
-import { ArkanoidBlock } from '../../models/arkanoid-block';
-import { ArkanoidBlockCreateHelper } from '../../models/arkanoid-blocks-create-helper';
+import { BonusItem } from './models/bonusItem-arkanoid';
+import { ImageForCanvas } from '../../models/shapes/imageForCanvas';
+import { ArkanoidBlockCreateHelper } from './models/arkanoid-blocks-create-helper';
 import { ScoreBoardComponent } from '../../shared/score-board/score-board.component';
 import { CommonModule } from '@angular/common';
 import { GameState } from '../../models/gameState';
-import { Router } from '@angular/router';
+import { KeyboardControlService } from '../../services/controlServices/keyboard-control.service';
+import { Globals } from '../../shared/globals';
+import { GameStateService } from '../../services/gameState.service';
+import { ArkanoidBlock } from './models/arkanoid-block';
+import { FilledRectangle } from '../../models/shapes/filledRectangle';
 
 @Component({
   selector: 'app-arkanoid',
@@ -54,8 +56,9 @@ export class ArkanoidComponent extends GameComponent implements OnDestroy {
   constructor(
     private drawService: DrawService,
     private mathService: MathService,
-    private gameRouter: Router) {
-    super(gameRouter);
+    private gameKeyboardControlService: KeyboardControlService,
+    private gameGameStateService: GameStateService) {
+    super(gameKeyboardControlService, gameGameStateService);
   }
 
   override ngOnDestroy(): void {
@@ -96,14 +99,14 @@ export class ArkanoidComponent extends GameComponent implements OnDestroy {
     this.createBallInterval();
   }
   conditionToEndMainInterval(): boolean {
-    return this.ball.point.height > this.canvas.height || !this.blocks.some(block => block.visible);
+    return this.ball.point.height > this.canvasHelper.canvas.height || !this.blocks.some(block => block.visible);
   }
 
   private initHeroValues(): void {
     const heroStartPoint =
     {
-      width: this.canvas.width / 2 - 10,
-      height: this.canvas.height - 5
+      width: this.canvasHelper.canvas.width / 2 - 10,
+      height: this.canvasHelper.canvas.height - 5
     };
     this.hero = new FilledRectangle(heroStartPoint, this.defaultHeroWidth, 10, 'green');
   }
@@ -113,21 +116,21 @@ export class ArkanoidComponent extends GameComponent implements OnDestroy {
       width: this.hero.point.width - this.hero.width / 2,
       height: this.hero.point.height - this.hero.height / 2
     };
-    this.drawService.drawFilledRectangle(this.ctx, this.hero as FilledRectangle);
+    this.drawService.drawFilledRectangle(this.canvasHelper.ctx, this.hero as FilledRectangle);
   }
 
   private initBallValue(): void {
     this.ball = new Circle(
       {
-        width: MathService.getRandomInteger(this.canvas.width * 2 / 5, this.canvas.width * 3 / 5),
-        height: this.canvas.height / 2
+        width: MathService.getRandomInteger(this.canvasHelper.canvas.width * 2 / 5, this.canvasHelper.canvas.width * 3 / 5),
+        height: this.canvasHelper.canvas.height / 2
       },
       2,
       'red');
   }
 
   private drawBall(): void {
-    this.drawService.drawCircle(this.ctx, this.ball);
+    this.drawService.drawCircle(this.canvasHelper.ctx, this.ball);
   }
 
   private initBlocks(): void {
@@ -170,7 +173,7 @@ export class ArkanoidComponent extends GameComponent implements OnDestroy {
 
   private prepareBlocksRow(creator: ArkanoidBlockCreateHelper) {
     creator.countOfBlocksInFloor = MathService.getRandomInteger(this.minBlockInRow, this.maxBlockInRow);
-    creator.blocksWidth = this.canvas.width / creator.countOfBlocksInFloor - this.spaceBetweenBlocksInRow;
+    creator.blocksWidth = this.canvasHelper.canvas.width / creator.countOfBlocksInFloor - this.spaceBetweenBlocksInRow;
     creator.currentWidth = 0;
 
   }
@@ -188,7 +191,7 @@ export class ArkanoidComponent extends GameComponent implements OnDestroy {
   private drawBlocks(): void {
     this.blocks.forEach(block => {
       if (block.visible) {
-        this.drawService.drawFilledRectangle(this.ctx, block.rectangle);
+        this.drawService.drawFilledRectangle(this.canvasHelper.ctx, block.rectangle);
       }
     }
     )
@@ -196,7 +199,7 @@ export class ArkanoidComponent extends GameComponent implements OnDestroy {
 
   private createBallInterval(): void {
     this.ballInterval = setInterval(() => {
-      if(this.gameState === GameState.paused) {
+      if(Globals.gameState === GameState.paused) {
         return;
       }
       // Hero bounce ball
@@ -210,7 +213,7 @@ export class ArkanoidComponent extends GameComponent implements OnDestroy {
         this.isBallfallDown = true;
       }
       //Ball bounce from left or right border
-      if (this.ball.point.width <= 0 || this.ball.point.width >= this.canvas.width) {
+      if (this.ball.point.width <= 0 || this.ball.point.width >= this.canvasHelper.canvas.width) {
         this.ballBounceAngle = 180 - this.ballBounceAngle;
       }
 
@@ -260,7 +263,7 @@ export class ArkanoidComponent extends GameComponent implements OnDestroy {
       this.surpriseBoxImage.point = block.rectangle.point;
       // surprise box falling down
       this.supriseInterval = setInterval(() => {
-        if(this.gameState === GameState.paused) {
+        if(Globals.gameState === GameState.paused) {
           return;
         }
         this.surpriseBoxImage.point.height += 0.25;
@@ -278,7 +281,7 @@ export class ArkanoidComponent extends GameComponent implements OnDestroy {
   private drawSupriseBox(point: Point): void {
     this.surpriseBoxImage.point = point;
     this.drawService
-      .drawImage(this.ctx, this.surpriseBoxImage);
+      .drawImage(this.canvasHelper.ctx, this.surpriseBoxImage);
   }
 
   private isCollisionFromTopOrDownBorder(block: ArkanoidBlock): boolean {
@@ -296,7 +299,7 @@ export class ArkanoidComponent extends GameComponent implements OnDestroy {
   private setActiveBoostInterval(bonusItem: BonusItem) {
     this.activeBoost = bonusItem;
     this.activeBoostInterval = setInterval(() => {
-      if(this.gameState === GameState.paused) {
+      if(Globals.gameState === GameState.paused) {
         return;
       }
       this.timeToEndActiveBoost -= 0.1
@@ -368,7 +371,7 @@ export class ArkanoidComponent extends GameComponent implements OnDestroy {
   }
 
   setDefaultCanvasValues() {
-    this.canvas.width = 300;
-    this.canvas.height = 150;
+    this.canvasHelper.canvas.width = 300;
+    this.canvasHelper.canvas.height = 150;
   }
 }

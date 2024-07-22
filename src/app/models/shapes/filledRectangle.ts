@@ -1,6 +1,8 @@
+import { MoveableShape } from "./moveable-shape";
 import { Point } from "./point";
 
-export class FilledRectangle {
+
+export class FilledRectangle implements MoveableShape {
     startPoint: Point;
     width: number;
     height: number;

@@ -1,8 +1,8 @@
 import { Injectable } from "@angular/core";
-import { Point } from "../models/point";
-import { Circle } from "../models/circle";
+import { Point } from "../models/shapes/point";
+import { Circle } from "../models/shapes/circle";
 import { Subject } from "rxjs";
-import { ImageForCanvas } from "../models/imageForCanvas";
+import { ImageForCanvas } from "../models/shapes/imageForCanvas";
 import { GameState } from "../models/gameState";
 
 @Injectable({

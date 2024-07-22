@@ -1,14 +1,14 @@
 import { Injectable } from "@angular/core";
 import { DrawService } from "../../../services/draw.service";
-import { FilledRectangle } from "../../../models/filledRectangle";
 import { PlatformOponent } from "../models/platform-oponents";
 import { PlatformGradientValues } from "../models/platform-gradient-values";
-import { ImageForCanvas } from "../../../models/imageForCanvas";
+import { ImageForCanvas } from "../../../models/shapes/imageForCanvas";
 import { Viewport } from "../../../models/viewPort";
-import { RotateImageForCanvas } from "../../../models/rotate-image-for-canvas";
-import { PokemonHero } from "../../../models/pokemon-hero";
+import { PokemonHero } from "../models/pokemon-hero";
 import { OponentEnum } from "../models/oponent-enum";
 import { KoffingOponent } from "../models/koffing-oponent";
+import { FilledRectangle } from "../../../models/shapes/filledRectangle";
+import { RotateImageForCanvas } from "../../../models/shapes/rotate-image-for-canvas";
 
 @Injectable({
     providedIn: 'root',

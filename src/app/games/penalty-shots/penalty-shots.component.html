@@ -1,5 +1,5 @@
 <app-default-game-template 
-    [gameState]="gameState"
+    [gameState]="Globals.gameState"
     [pausedGameDisabled]="true"
     (gameReRunned)="reRun()" 
     (gameStarted)="startGame()"
@@ -11,7 +11,7 @@
         [name]="'Prędkość bramkarza'"></app-slider>
 </app-default-game-template>
 
-<app-score-board class="scoreboard-on-canvas" *ngIf="gameState !== GameState.new" [homeScore]="succesfullyAtempts"
+<app-score-board class="scoreboard-on-canvas" *ngIf="Globals.gameState !== GameState.new" [homeScore]="succesfullyAtempts"
     [guestScore]="failedAtempts">
 </app-score-board>
 

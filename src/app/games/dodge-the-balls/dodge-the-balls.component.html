@@ -1,5 +1,5 @@
 <app-default-game-template 
-    [gameState]="gameState" 
+    [gameState]="Globals.gameState" 
     [class]="'dodge-the-balls-canvas'" 
     (gameReRunned)="reRun()"
     (pausedGame)="pausedGame()"
@@ -15,6 +15,6 @@
         [name]="'Maksymalna wielkość przeciwników'"></app-slider>
 </app-default-game-template>
 
-<app-score-board class="scoreboard-under-canvas" *ngIf="gameState !== GameState.new" [homeScore]="succesfullyAtempts"
+<app-score-board class="scoreboard-under-canvas" *ngIf="Globals.gameState !== GameState.new" [homeScore]="succesfullyAtempts"
 [isJustPlayerScore]="true">
 </app-score-board>

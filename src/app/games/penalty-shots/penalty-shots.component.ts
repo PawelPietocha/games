@@ -1,14 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router, RouterOutlet } from '@angular/router';
 import { MatSliderModule } from '@angular/material/slider';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
-import { Circle } from '../../models/circle';
-import { FilledRectangle } from '../../models/filledRectangle';
-import { Rectangle } from '../../models/rectangle';
+import { Circle } from '../../models/shapes/circle';
 import { DrawService } from '../../services/draw.service';
 import { MathService } from '../../services/math.service';
 import { MoveService } from '../../services/move.service';
@@ -17,16 +14,19 @@ import { SliderComponent } from '../../shared/slider/slider.component';
 import { GameComponent } from '../../shared/game/game.component';
 import { DefaultGameTemplateComponent } from '../../shared/default-game-template/default-game-template.component';
 import { ControlKey } from '../../models/controlKey';
-import { RotateImageForCanvas } from '../../models/rotate-image-for-canvas';
-import { ImageForCanvas } from '../../models/imageForCanvas';
-import { Point } from '../../models/point';
+import { ImageForCanvas } from '../../models/shapes/imageForCanvas';
+import { Point } from '../../models/shapes/point';
+import { KeyboardControlService } from '../../services/controlServices/keyboard-control.service';
+import { GameStateService } from '../../services/gameState.service';
+import { FilledRectangle } from '../../models/shapes/filledRectangle';
+import { Rectangle } from '../../models/shapes/rectangle';
+import { RotateImageForCanvas } from '../../models/shapes/rotate-image-for-canvas';
 
 @Component({
   selector: 'app-penalty-shots',
   standalone: true,
   imports: [
     CommonModule,
-    RouterOutlet,
     MatSliderModule,
     MatInputModule,
     MatFormFieldModule,
@@ -61,8 +61,11 @@ export class PenaltyShotsComponent extends GameComponent implements OnInit {
     private drawService: DrawService,
     private moveService: MoveService,
     private mathService: MathService,
-    private gameRouter: Router) {
-    super(gameRouter);
+    private gameKeyboardControlService: KeyboardControlService,
+    private gameGameStateService: GameStateService) {
+    super(gameKeyboardControlService, gameGameStateService);
+    this.gameKeyboardControlService.setArrowLeftisPossible(this.arrowLeftIsPossible.bind(this));
+    this.gameKeyboardControlService.setArrowRightisPossible(this.arrowRightIsPossible.bind(this));
   }
 
   initControlList(): void {
@@ -117,67 +120,67 @@ export class PenaltyShotsComponent extends GameComponent implements OnInit {
     return;
   }
 
-  override arrowLeftIsPossible(): boolean {
+  arrowLeftIsPossible(): boolean {
     return this.hero.point.width > this.goalBars.pointA.width;
   }
 
-  override arrowRightIsPossible(): boolean {
+  arrowRightIsPossible(): boolean {
 
     return this.hero.point.width < this.goalBars.pointD.width;
   }
 
   private drawPlatform() {
-    this.drawService.drawFilledRectangle(this.ctx, this.downPlatform);
+    this.drawService.drawFilledRectangle(this.canvasHelper.ctx, this.downPlatform);
   }
 
   private drawBars() {
-    this.drawService.drawRectancleContours(this.ctx, this.goalBars, 2, true);
+    this.drawService.drawRectancleContours(this.canvasHelper.ctx, this.goalBars, 2, true);
   }
 
   private drawField() {
-    const count = this.canvas.height / this.downPlatform.height
+    const count = this.canvasHelper.canvas.height / this.downPlatform.height
     for (let i = 2; i < count + 2; i++) {
       if (i % 2 === 0) {
-        this.drawService.drawFilledRectangle(this.ctx,
-          new FilledRectangle({ width: 0, height: this.canvas.height - i * this.downPlatform.height },
-            this.canvas.width, this.downPlatform.height, '#11ce30'));
+        this.drawService.drawFilledRectangle(this.canvasHelper.ctx,
+          new FilledRectangle({ width: 0, height: this.canvasHelper.canvas.height - i * this.downPlatform.height },
+            this.canvasHelper.canvas.width, this.downPlatform.height, '#11ce30'));
       }
       else {
-        this.drawService.drawFilledRectangle(this.ctx,
-          new FilledRectangle({ width: 0, height: this.canvas.height - i * this.downPlatform.height },
-            this.canvas.width, this.downPlatform.height, 'green'));
+        this.drawService.drawFilledRectangle(this.canvasHelper.ctx,
+          new FilledRectangle({ width: 0, height: this.canvasHelper.canvas.height - i * this.downPlatform.height },
+            this.canvasHelper.canvas.width, this.downPlatform.height, 'green'));
       }
     }
   }
 
   private drawPenaltyArea() {
-    this.drawService.drawRectancleContours(this.ctx, this.penaltyArea, 3);
+    this.drawService.drawRectancleContours(this.canvasHelper.ctx, this.penaltyArea, 3);
   }
 
   private drawGoalArea() {
-    this.drawService.drawRectancleContours(this.ctx, this.goalArea, 3, true);
+    this.drawService.drawRectancleContours(this.canvasHelper.ctx, this.goalArea, 3, true);
   }
 
   private drawPenaltyArc() {
-    this.drawService.drawCircle(this.ctx, this.penaltyArc, 0.5, false);
+    this.drawService.drawCircle(this.canvasHelper.ctx, this.penaltyArc, 0.5, false);
   }
 
   private drawGoalKeeper() {
-    this.drawService.drawImage(this.ctx, this.hero as ImageForCanvas);
+    this.drawService.drawImage(this.canvasHelper.ctx, this.hero as ImageForCanvas);
   }
 
   private drawShoter() {
-    this.drawService.drawImage(this.ctx, this.shooter);
+    this.drawService.drawImage(this.canvasHelper.ctx, this.shooter);
   }
 
   private drawPenaltyPoint() {
-    this.drawService.drawCircle(this.ctx, this.penaltyPoint);
+    this.drawService.drawCircle(this.canvasHelper.ctx, this.penaltyPoint);
   }
 
   private drawBall() {
     this.shouldBallRotate ?
-      this.drawService.drawRotateImage(this.ctx, this.ballImg) :
-      this.drawService.drawImage(this.ctx, this.ballImg);
+      this.drawService.drawRotateImage(this.canvasHelper.ctx, this.ballImg) :
+      this.drawService.drawImage(this.canvasHelper.ctx, this.ballImg);
   }
 
   private runShooter() {
@@ -217,15 +220,15 @@ export class PenaltyShotsComponent extends GameComponent implements OnInit {
       0.04,
       0.08,
       3.6,
-      this.canvas);
+      this.canvasHelper.canvas);
   }
 
   private initGoalArea() {
     this.goalArea = new Rectangle(
-      { width: this.canvas.width * 0.18, height: this.downPlatform.startPoint.height },
-      { width: this.canvas.width * 0.18, height: this.canvas.height * 0.6 },
-      { width: this.canvas.width * 0.82, height: this.canvas.height * 0.6 },
-      { width: this.canvas.width * 0.82, height: this.downPlatform.startPoint.height },
+      { width: this.canvasHelper.canvas.width * 0.18, height: this.downPlatform.startPoint.height },
+      { width: this.canvasHelper.canvas.width * 0.18, height: this.canvasHelper.canvas.height * 0.6 },
+      { width: this.canvasHelper.canvas.width * 0.82, height: this.canvasHelper.canvas.height * 0.6 },
+      { width: this.canvasHelper.canvas.width * 0.82, height: this.downPlatform.startPoint.height },
       'white'
     );
   }
@@ -234,7 +237,7 @@ export class PenaltyShotsComponent extends GameComponent implements OnInit {
     this.shooter = new ImageForCanvas(
       "assets/penalty/football-shoe.png",
       {
-        width: this.canvas.width / 2 + 0.5 * this.penaltyArc.radius,
+        width: this.canvasHelper.canvas.width / 2 + 0.5 * this.penaltyArc.radius,
         height: this.penaltyArea.pointB.height
       },
       60,
@@ -251,21 +254,21 @@ export class PenaltyShotsComponent extends GameComponent implements OnInit {
       },
       0.04,
       0.08,
-      this.canvas
+      this.canvasHelper.canvas
     )
   }
 
   private initPenaltyArcValues() {
     this.penaltyArc = new Circle(
-      { width: this.canvas.width / 2, height: this.penaltyArea.pointB.height },
-      this.canvas.width * 0.1,
+      { width: this.canvasHelper.canvas.width / 2, height: this.penaltyArea.pointB.height },
+      this.canvasHelper.canvas.width * 0.1,
       'white'
     );
   }
 
   private initPenaltyPointValues() {
     this.penaltyPoint = new Circle(
-      { width: this.canvas.width / 2, height: this.canvas.height * 0.35 },
+      { width: this.canvasHelper.canvas.width / 2, height: this.canvasHelper.canvas.height * 0.35 },
       6,
       'white'
     );
@@ -273,29 +276,29 @@ export class PenaltyShotsComponent extends GameComponent implements OnInit {
 
   private initPenaltyAreaValues() {
     this.penaltyArea = new Rectangle(
-      { width: this.canvas.width * 0.1, height: this.downPlatform.startPoint.height },
-      { width: this.canvas.width * 0.1, height: this.canvas.height * 0.2 },
-      { width: this.canvas.width * 0.9, height: this.canvas.height * 0.2 },
-      { width: this.canvas.width * 0.9, height: this.downPlatform.startPoint.height },
+      { width: this.canvasHelper.canvas.width * 0.1, height: this.downPlatform.startPoint.height },
+      { width: this.canvasHelper.canvas.width * 0.1, height: this.canvasHelper.canvas.height * 0.2 },
+      { width: this.canvasHelper.canvas.width * 0.9, height: this.canvasHelper.canvas.height * 0.2 },
+      { width: this.canvasHelper.canvas.width * 0.9, height: this.downPlatform.startPoint.height },
       'white'
     )
   }
 
   private initPlatformValues() {
     this.downPlatform = new FilledRectangle(
-      { width: 0, height: 0.9 * this.canvas.height },
-      this.canvas.width,
-      0.1 * this.canvas.height,
+      { width: 0, height: 0.9 * this.canvasHelper.canvas.height },
+      this.canvasHelper.canvas.width,
+      0.1 * this.canvasHelper.canvas.height,
       'lightgrey'
     );
   }
 
   private initGoalBars() {
     this.goalBars = new Rectangle(
-      { width: this.canvas.width / 4, height: this.downPlatform.startPoint.height },
-      { width: this.canvas.width / 4, height: this.downPlatform.startPoint.height + 0.05 * this.canvas.height },
-      { width: 3 * this.canvas.width / 4, height: this.downPlatform.startPoint.height + 0.05 * this.canvas.height },
-      { width: 3 * this.canvas.width / 4, height: this.downPlatform.startPoint.height },
+      { width: this.canvasHelper.canvas.width / 4, height: this.downPlatform.startPoint.height },
+      { width: this.canvasHelper.canvas.width / 4, height: this.downPlatform.startPoint.height + 0.05 * this.canvasHelper.canvas.height },
+      { width: 3 * this.canvasHelper.canvas.width / 4, height: this.downPlatform.startPoint.height + 0.05 * this.canvasHelper.canvas.height },
+      { width: 3 * this.canvasHelper.canvas.width / 4, height: this.downPlatform.startPoint.height },
       'black'
     )
   }

@@ -1,7 +1,7 @@
-import { PokemonForms } from "../games/platform/models/pokemon-forms";
-import { PokemonSource } from "../games/platform/models/pokemon-source";
-import { ImageForCanvas } from "./imageForCanvas";
-import { Point } from "./point";
+import { PokemonForms } from "./pokemon-forms";
+import { PokemonSource } from "./pokemon-source";
+import { ImageForCanvas } from "../../../models/shapes/imageForCanvas";
+import { Point } from "../../../models/shapes/point";
 
 export class PokemonHero extends ImageForCanvas {
     looksRight: boolean = true;

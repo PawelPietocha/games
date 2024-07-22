@@ -1,11 +1,11 @@
 import { Injectable } from "@angular/core";
-import { Rectangle } from "../models/rectangle";
-import { Circle } from "../models/circle";
-import { FilledRectangle } from "../models/filledRectangle";
-import { ImageForCanvas } from "../models/imageForCanvas";
-import { RotateImageForCanvas } from "../models/rotate-image-for-canvas";
-import { Point } from "../models/point";
+import { Circle } from "../models/shapes/circle";
+import { ImageForCanvas } from "../models/shapes/imageForCanvas";
+import { Point } from "../models/shapes/point";
 import { KoffingOponent } from "../games/platform/models/koffing-oponent";
+import { FilledRectangle } from "../models/shapes/filledRectangle";
+import { Rectangle } from "../models/shapes/rectangle";
+import { RotateImageForCanvas } from "../models/shapes/rotate-image-for-canvas";
 
 @Injectable({
     providedIn: 'root',

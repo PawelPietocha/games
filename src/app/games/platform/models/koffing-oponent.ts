@@ -1,4 +1,4 @@
-import { Point } from "../../../models/point";
+import { Point } from "../../../models/shapes/point";
 import { OponentEnum } from "./oponent-enum";
 import { PlatformOponent } from "./platform-oponents";
 
