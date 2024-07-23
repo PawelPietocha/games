@@ -37,7 +37,6 @@ export class CreatePokemonHelperService {
     }
 
     initHero(chosenPokemonName: PokemonToChoose): PokemonHero {
-        console.log(chosenPokemonName);
         const pokemonSource = this.dynamicLevel.pokemonSource.find(pokemon => pokemon.basicName === chosenPokemonName);
         return new PokemonHero(
             pokemonSource.basicFormSrcRight,

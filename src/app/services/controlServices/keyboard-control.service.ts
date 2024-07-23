@@ -83,7 +83,7 @@ export class KeyboardControlService {
       if (event.key === ' ') {
         this.jumpControlService.setJumpInterval(this.hero, this.heroMovementSpeed, this.canvasHelper);
       }
-      if (event.key === 'control') {
+      if (event.key === 'Control') {
         this.shotControlService.setShotInterval();
       }
     }

@@ -27,6 +27,7 @@ export class GameStateService {
           });
           dialogRef.afterClosed().subscribe((value: boolean) => {
             if (value) {
+              Globals.gameState = GameState.new;
               this.router.navigate(['']);
             }
           })

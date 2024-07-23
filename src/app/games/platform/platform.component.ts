@@ -28,6 +28,7 @@ import { FilledRectangle } from '../../models/shapes/filledRectangle';
 import { PokemonWeapon } from './models/pokemon-weapon';
 import { PokemonDataService } from './services/pokemon-data.service';
 import { PokemonJumpPrepareService } from './services/prepare-services/pokemon-jump-prepare.service';
+import { PokemonShotPrepareService } from './services/prepare-services/pokemon-shot-prepare.service';
 
 @Component({
   selector: 'app-platform',
@@ -86,6 +87,7 @@ export class PlatformComponent extends GameComponent implements OnDestroy {
     private gameKeyboardControlService: KeyboardControlService,
     private gameGameStateService: GameStateService,
     private pokemonJumpPrepareService: PokemonJumpPrepareService,
+    private pokemonShotPrepareService: PokemonShotPrepareService,
     private pokemonDataService: PokemonDataService) {
     super(gameKeyboardControlService, gameGameStateService);
     this.pokemonToChooseArray = this.initPlatformService.getPokemonToChoose();
@@ -97,7 +99,7 @@ export class PlatformComponent extends GameComponent implements OnDestroy {
     clearInterval(this.gameInterval);
     clearInterval(this.timeInterval);
     clearInterval(this.shotInterval);
-
+    this.pokemonJumpPrepareService.clear();
   }
 
   initValues(): void {
@@ -113,7 +115,10 @@ export class PlatformComponent extends GameComponent implements OnDestroy {
     this.pokemonHero = this.hero as PokemonHero;
     this.weapon = this.initPlatformService.initWeaponValue(this.chosenPokemonName);
     this.resetToDefaultValues(this.level);
+    this.pokemonDataService.initLevel(this.level);
+    this.pokemonDataService.initData(this.canvasHelper.canvas, this.chosenPokemonName);
     this.pokemonJumpPrepareService.initJumpService(this.pokemonHero, this.heroMovementSpeed, this.maxJumpHeight);
+    this.pokemonShotPrepareService.initShotService(this.pokemonHero, this.weapon, this.heroMovementSpeed);
   }
   initControlList(): void {
     this.controlKeyBoardKeys = this.initPlatformService.controlKeyBoardKey;
@@ -157,7 +162,7 @@ export class PlatformComponent extends GameComponent implements OnDestroy {
   }
 
   arrowRightIsPossible(): boolean {
-    this.weapon.changeBulletDirection();
+    this.weapon.changeBulletDirection(true);
 
     this.pokemonHero.changeHeroLookDirection(false);
 
@@ -171,7 +176,7 @@ export class PlatformComponent extends GameComponent implements OnDestroy {
   }
 
   arrowLeftIsPossible(): boolean {
-    this.weapon.changeBulletDirection();
+    this.weapon.changeBulletDirection(false);
 
     this.pokemonHero.changeHeroLookDirection(true);
 
@@ -180,37 +185,6 @@ export class PlatformComponent extends GameComponent implements OnDestroy {
     )
 
     return this.isHeroOnViewPort() && !isHeroCollisionWithPlatform;
-  }
-
-  override setControlKeyInterval(): void {
-    if (!this.weapon.isWeaponReady(this.pokemonHero.currentPokemonForm)
-    ) {
-      return;
-    }
-
-    this.weapon.shouldBulletGoingRight = this.pokemonHero.looksRight;
-
-    this.startBullet();
-
-    this.shotInterval = setInterval(() => {
-
-      if (this.isBulletHitPlatform()) {
-        this.clearBullet();
-      }
-
-      const isBulletHitOponent = this.isBulletHitOponent();
-
-      if (isBulletHitOponent.hit) {
-        isBulletHitOponent.oponent.visible = false;
-        this.clearBullet();
-      }
-
-      if (!this.isBulletOnViewPort()) {
-        this.clearBullet();
-      }
-
-      this.weapon.changeWeaponWidthPosition(this.heroMovementSpeed);
-    })
   }
 
   onChoosePokemon(name: PokemonToChoose) {
@@ -222,7 +196,6 @@ export class PlatformComponent extends GameComponent implements OnDestroy {
       if (Globals.gameState === GameState.paused) {
         return;
       }
-      this.gravityFunction();
       this.pokeballFunction();
       this.oponentFunction();
       this.coinFunction();
@@ -252,10 +225,6 @@ export class PlatformComponent extends GameComponent implements OnDestroy {
       this.laser.point.width -= 1;
       this.laser.width += 2;
     }
-  }
-
-  private gravityFunction() {
-
   }
 
   private coinFunction() {
@@ -418,40 +387,10 @@ export class PlatformComponent extends GameComponent implements OnDestroy {
     return this.drawPlatformService.isHeroOnViewPort(this.pokemonHero);
   }
 
-  private isBulletHitPlatform(): boolean {
-    return this.platforms.some(platform => this.mathService.isImageAndRectangleTangleFromLeftRectangleSide(this.weapon, platform) ||
-      this.mathService.isImageAndRectangleTangleFromRightRectangleSide(this.weapon, platform))
-  }
-
-  private clearBullet(): void {
-    this.weapon.inUse = false;
-    this.weapon.visible = false;
-    clearInterval(this.shotInterval);
-  }
-
-  private isBulletOnViewPort(): boolean {
-    return this.drawPlatformService.isImageOnViewPort(this.weapon);
-  }
-
+  
   private restoreCanvas(): void {
     this.canvasHelper.ctx.translate(this.canvasHelper.canvasWidthShift, 0);
     this.canvasHelper.canvasWidthShift = 0;
-  }
-
-  private startBullet(): void {
-    this.weapon.point = { width: this.hero.point.width, height: this.hero.point.height };
-    this.weapon.startBullet();
-  }
-
-  private isBulletHitOponent(): { hit: boolean, oponent?: PlatformOponent } {
-    const oponentToKill = this.oponents.find(oponent => oponent.visible && this.mathService.isTwoImagesToClose(oponent, this.weapon))
-    if (oponentToKill) {
-      this.pokemonCounter.score += this.gameHelperService.collectScore(ScoreCollector.killOponent);
-      return { hit: true, oponent: oponentToKill }
-    }
-    else {
-      return { hit: false }
-    }
   }
 
   private evolve(): void {
@@ -490,8 +429,6 @@ export class PlatformComponent extends GameComponent implements OnDestroy {
   }
 
   private initLevel(level: number) {
-    this.pokemonDataService.initLevel(level);
-    this.pokemonDataService.initData(this.canvasHelper.canvas, this.chosenPokemonName);
     this.initPlatformService.initLevel(level);
     this.time = this.initPlatformService.initTime();
     this.grounds = this.initPlatformService.initGround();

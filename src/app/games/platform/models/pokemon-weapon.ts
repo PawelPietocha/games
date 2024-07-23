@@ -12,9 +12,9 @@ export class PokemonWeapon extends RotateImageForCanvas {
         super(src, point, width, height, rotateDegree, canvas, visible);
     }
 
-    changeBulletDirection() {
+    changeBulletDirection(right: boolean) {
         if (!this.inUse) {
-            this.shouldBulletGoingRight = this.shouldBulletGoingRight ? false : true;
+            this.shouldBulletGoingRight = right;
         }
     }
 
@@ -37,5 +37,10 @@ export class PokemonWeapon extends RotateImageForCanvas {
         else {
             this.point.width -= shift;
         }
+    }
+
+    clearBullet(): void {
+        this.inUse = false;
+        this.visible = false;
     }
 }
