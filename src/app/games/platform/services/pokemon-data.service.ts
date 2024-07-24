@@ -41,6 +41,7 @@ export class PokemonDataService {
         this.oponents = this.initPlatformService.initOponents();
         this.weapon = this.initPlatformService.initWeaponValue(chosenPokemonName);
         this.hero = this.initPlatformService.initHeroValue(chosenPokemonName);
+        this.finishImage = this.initPlatformService.initFinishImage();
     }
 
     initLevel(level: number): void {

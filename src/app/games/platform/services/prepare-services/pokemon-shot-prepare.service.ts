@@ -7,7 +7,7 @@ import { ShotControlService } from "../../../../services/controlServices/shot-co
 import { PlatformOponent } from "../../models/platform-oponents";
 import { FilledRectangle } from "../../../../models/shapes/filledRectangle";
 import { MathService } from "../../../../services/math.service";
-import { DrawPlaftormService } from "../draw-platform.service";
+import { ViewportService } from "../viewport.service";
 
 @Injectable({
     providedIn: 'root',
@@ -20,7 +20,7 @@ export class PokemonShotPrepareService {
     constructor(private pokemonDataService: PokemonDataService,
         private shotService: ShotControlService,
         private mathService: MathService,
-        private drawPlatformService: DrawPlaftormService
+        private viewportService: ViewportService
     ) { }
 
     initShotService(pokemonHero: PokemonHero, pokemonWeapon: PokemonWeapon, speed: number): void {
@@ -41,7 +41,7 @@ export class PokemonShotPrepareService {
     }
 
     private isBulletOnViewPort(weapon: PokemonWeapon): boolean {
-        return this.drawPlatformService.isImageOnViewPort(weapon);
+        return this.viewportService.isImageOnViewPort(weapon);
     }
 
     private isBulletHitOponent(weapon: PokemonWeapon): boolean {

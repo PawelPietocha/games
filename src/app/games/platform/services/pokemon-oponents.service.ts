@@ -2,15 +2,15 @@ import { Injectable } from "@angular/core";
 import { MathService } from "../../../services/math.service";
 import { Interval } from "../../../shared/intervals/interval";
 import { PlatformOponent } from "../models/platform-oponents";
-import { DrawPlaftormService } from "./draw-platform.service";
 import { PokemonDataService } from "./pokemon-data.service";
+import { ViewportService } from "./viewport.service";
 
 @Injectable({
     providedIn: 'root',
 })
 export class PokemonOponentService {
     constructor(private pokemonDataService: PokemonDataService,
-        private drawPlatformService: DrawPlaftormService,
+        private viewportService: ViewportService,
         private mathService: MathService
     ) { }
 
@@ -29,7 +29,7 @@ export class PokemonOponentService {
 
     private action() {
         this.oponents.forEach(oponent => {
-            if (!this.drawPlatformService.isImageOnViewPort(oponent)) {
+            if (!this.viewportService.isImageOnViewPort(oponent)) {
                 return;
             }
             if (oponent.shouldChangeDirection(this.pokemonDataService, this.mathService)) {

@@ -27,6 +27,8 @@ import { PokemonDataService } from './services/pokemon-data.service';
 import { PokemonJumpPrepareService } from './services/prepare-services/pokemon-jump-prepare.service';
 import { PokemonShotPrepareService } from './services/prepare-services/pokemon-shot-prepare.service';
 import { PokemonOponentService } from './services/pokemon-oponents.service';
+import { ViewportService } from './services/viewport.service';
+import { PokemonControlService } from './services/pokemon-control.service';
 
 @Component({
   selector: 'app-platform',
@@ -86,10 +88,11 @@ export class PlatformComponent extends GameComponent implements OnDestroy {
     private pokemonJumpPrepareService: PokemonJumpPrepareService,
     private pokemonShotPrepareService: PokemonShotPrepareService,
     private pokemonDataService: PokemonDataService,
+    private viewportService: ViewportService,
+    private pokemonControlService: PokemonControlService,
     private pokemonOponentService: PokemonOponentService) {
     super(gameKeyboardControlService, gameGameStateService);
     this.pokemonToChooseArray = this.initPlatformService.getPokemonToChoose();
-    this.setKeyboardControlServiceSettings();
   }
 
   override ngOnDestroy(): void {
@@ -105,36 +108,26 @@ export class PlatformComponent extends GameComponent implements OnDestroy {
       return;
     }
     this.initPlatformService.createCanvas(this.canvasHelper.canvas);
-    this.drawPlatformService.prepareService(this.canvasHelper.canvas, this.canvasHelper.ctx);
-    this.heroMovementSpeed = this.initPlatformService.heroMovementSpeed;
-    this.mathService.heroMovementSpeed = this.initPlatformService.heroMovementSpeed;
-    this.hero = this.initPlatformService.initHeroValue(this.chosenPokemonName);
-    this.pokemonHero = this.hero as PokemonHero;
-    this.weapon = this.initPlatformService.initWeaponValue(this.chosenPokemonName);
-    this.resetToDefaultValues(this.level);
     this.pokemonDataService.initLevel(this.level);
     this.pokemonDataService.initData(this.canvasHelper.canvas, this.chosenPokemonName);
+    this.hero = this.pokemonDataService.hero;
+    this.pokemonHero = this.hero as PokemonHero;
+    this.weapon = this.initPlatformService.initWeaponValue(this.chosenPokemonName);
+    this.viewportService.prepareService(this.canvasHelper.canvas, this.canvasHelper.ctx);
+    this.drawPlatformService.prepareService(this.canvasHelper.ctx);
+    this.heroMovementSpeed = this.initPlatformService.heroMovementSpeed;
+    this.mathService.heroMovementSpeed = this.initPlatformService.heroMovementSpeed;
+    this.resetToDefaultValues(this.level);
     this.pokemonJumpPrepareService.initJumpService(this.pokemonHero, this.heroMovementSpeed, this.maxJumpHeight);
     this.pokemonShotPrepareService.initShotService(this.pokemonHero, this.weapon, this.heroMovementSpeed);
     this.pokemonOponentService.initValues();
+    this.pokemonControlService.prepareService(this.canvasHelper, this.heroMovementSpeed);
   }
   initControlList(): void {
     this.controlKeyBoardKeys = this.initPlatformService.controlKeyBoardKey;
   }
   drawAll(): void {
-    this.drawPlatformService.drawSimpleImage(this.finishImage);
-    this.drawPlatformService.drawRectangles(this.grounds);
-    this.drawPlatformService.drawRectangles(this.platforms);
-    this.drawPlatformService.drawSimpleImages(this.nonIntrusiveImages);
-    this.drawPlatformService.drawHero(this.pokemonHero);
-    this.drawPlatformService.drawRectangles(this.waters);
-    this.drawPlatformService.drawOponents(this.oponents);
-    this.drawPlatformService.drawSimpleImages(this.pokeballs);
-    this.drawPlatformService.drawRotateImage(this.weapon);
-    this.drawPlatformService.drawSimpleImages(this.coins);
-    if (this.pokemonHero.opacity > 0) {
-      this.drawPlatformService.drawSimpleImage(this.laser);
-    }
+    this.drawPlatformService.drawAll();
   }
   actionAfterEndRun(): void {
     this.changeLevel();
@@ -142,7 +135,7 @@ export class PlatformComponent extends GameComponent implements OnDestroy {
     clearInterval(this.timeInterval);
   }
   actionAfterStartGame(): void {
-    this.drawPlatformService.resetViewportToDefaultValues();
+    this.viewportService.resetViewportToDefaultValues();
     this.initLevel(this.level);
     this.createGameInterval();
     this.createTimeInterval();
@@ -153,36 +146,7 @@ export class PlatformComponent extends GameComponent implements OnDestroy {
 
   conditionToEndMainInterval(): boolean {
     const heroFellDown = this.hero.point.height >= 0.96 * this.canvasHelper.canvas.height;
-    if (this.isHeroReachedFinish()) {
-      //Zablokowanie ruchu
-    }
     return heroFellDown || this.loseGame || this.time === 0 || this.wonGame
-  }
-
-  arrowRightIsPossible(): boolean {
-    this.weapon.changeBulletDirection(true);
-
-    this.pokemonHero.changeHeroLookDirection(false);
-
-    const heroCollissionWithPlatform = this.platforms.some(platform =>
-      this.mathService.isImageAndRectangleTangleFromLeftRectangleSide(this.pokemonHero, platform)
-    )
-    if (!heroCollissionWithPlatform && this.isHeroOnCenterOfViewPort()) {
-      this.moveViewPortToRight();
-    }
-    return !heroCollissionWithPlatform;
-  }
-
-  arrowLeftIsPossible(): boolean {
-    this.weapon.changeBulletDirection(false);
-
-    this.pokemonHero.changeHeroLookDirection(true);
-
-    const isHeroCollisionWithPlatform = this.platforms.some(platform =>
-      this.mathService.isImageAndRectangleTangleFromRightRectangleSide(this.pokemonHero, platform)
-    )
-
-    return this.isHeroOnViewPort() && !isHeroCollisionWithPlatform;
   }
 
   onChoosePokemon(name: PokemonToChoose) {
@@ -196,7 +160,7 @@ export class PlatformComponent extends GameComponent implements OnDestroy {
       }
       this.pokeballFunction();
       this.coinFunction();
-      this.laserFunction();
+      // this.laserFunction();
     })
   }
 
@@ -278,21 +242,6 @@ export class PlatformComponent extends GameComponent implements OnDestroy {
     }, 1000)
   }
 
-  private moveViewPortToRight() {
-    this.drawPlatformService.moveViewPortToRight(this.heroMovementSpeed);
-    this.canvasHelper.canvasWidthShift += this.heroMovementSpeed;
-    this.pokemonCounter.score += Math.floor(this.heroMovementSpeed);
-  }
-
-  private isHeroOnCenterOfViewPort(): boolean {
-    return this.drawPlatformService.isImageOnCenterOfViewPort(this.pokemonHero);
-  }
-
-  private isHeroOnViewPort(): boolean {
-    return this.drawPlatformService.isHeroOnViewPort(this.pokemonHero);
-  }
-
-
   private restoreCanvas(): void {
     this.canvasHelper.ctx.translate(this.canvasHelper.canvasWidthShift, 0);
     this.canvasHelper.canvasWidthShift = 0;
@@ -336,15 +285,6 @@ export class PlatformComponent extends GameComponent implements OnDestroy {
   private initLevel(level: number) {
     this.initPlatformService.initLevel(level);
     this.time = this.initPlatformService.initTime();
-    this.grounds = this.initPlatformService.initGround();
-    this.platforms = this.initPlatformService.initPlatforms();
-    this.oponents = this.pokemonDataService.oponents;
-    this.pokeballs = this.initPlatformService.initPokeballs();
-    this.waters = this.initPlatformService.initWater();
-    this.finishImage = this.initPlatformService.initFinishImage();
-    this.laser = this.initPlatformService.initLaser();
-    this.coins = this.initPlatformService.initCoins();
-    this.nonIntrusiveImages = this.initPlatformService.initNonIntrusiveImages();
   }
 
   private isHeroReachedFinish() {
@@ -353,10 +293,5 @@ export class PlatformComponent extends GameComponent implements OnDestroy {
 
   private changeLevel() {
     this.level = this.wonGame ? 2 : 1;
-  }
-
-  private setKeyboardControlServiceSettings(): void {
-    this.gameKeyboardControlService.setArrowLeftisPossible(this.arrowLeftIsPossible.bind(this));
-    this.gameKeyboardControlService.setArrowRightisPossible(this.arrowRightIsPossible.bind(this));
   }
 }

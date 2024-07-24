@@ -1,5 +1,4 @@
 import { Point } from "../../../models/shapes/point";
-import { MathService } from "../../../services/math.service";
 import { PokemonDataService } from "../services/pokemon-data.service";
 import { OponentEnum } from "./oponent-enum";
 import { PlatformOponent } from "./platform-oponents";

@@ -4,9 +4,9 @@ import { PokemonToChoose } from "../models/pokemon-to-choose";
 import { BaseLevel } from "../levels/baseLevel";
 import { LevelOne } from "../levels/level-one";
 import { LevelTwo } from "../levels/level-two";
-import { CreatePokemonHelperService } from "./create-pokemon-helper.service";
 import { ShapeCreateHelperService } from "../../../services/shape-create-helper.service";
 import { ImageForCanvas } from "../../../models/shapes/imageForCanvas";
+import { CreatePokemonHelperService } from "./items-create-helpers/create-pokemon-helper.service";
 
 @Injectable({
     providedIn: 'root',

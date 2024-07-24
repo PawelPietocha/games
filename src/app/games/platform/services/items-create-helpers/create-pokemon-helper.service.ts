@@ -1,18 +1,19 @@
 import { Injectable } from "@angular/core";
-import { BaseLevel } from "../levels/baseLevel";
-import { PokemonHero } from "../models/pokemon-hero";
-import { PokemonToChoose } from "../models/pokemon-to-choose";
-import { ImageForCanvas } from "../../../models/shapes/imageForCanvas";
-import { TreeCreateHelperService } from "./items-create-helpers/tree-create-helper.service";
-import { PokeballCreateHelperService } from "./items-create-helpers/pokeball-create-helper.service";
-import { RepetableItemsCreateHelperService } from "./items-create-helpers/repetable-items-create-helper.service";
-import { CoinsCreateHelperService } from "./items-create-helpers/coins-create-helper.service";
-import { SurfaceOfPlatformCreateHelperService } from "./items-create-helpers/surface-of-platform-create-helper.service";
-import { SufraceOfGroundCreateHelperService } from "./items-create-helpers/surface-of-ground-create-helper.service";
-import { InsideCreateHelperService } from "./items-create-helpers/inside-create-helper.service";
-import { PokemonWeapon } from "../models/pokemon-weapon";
-import { OponentsCreateHelperService } from "./items-create-helpers/oponents-create-helper.service";
-import { PlatformOponent } from "../models/platform-oponents";
+import { ImageForCanvas } from "../../../../models/shapes/imageForCanvas";
+import { BaseLevel } from "../../levels/baseLevel";
+import { PlatformOponent } from "../../models/platform-oponents";
+import { PokemonHero } from "../../models/pokemon-hero";
+import { PokemonToChoose } from "../../models/pokemon-to-choose";
+import { PokemonWeapon } from "../../models/pokemon-weapon";
+import { CoinsCreateHelperService } from "./coins-create-helper.service";
+import { InsideCreateHelperService } from "./inside-create-helper.service";
+import { OponentsCreateHelperService } from "./oponents-create-helper.service";
+import { PokeballCreateHelperService } from "./pokeball-create-helper.service";
+import { RepetableItemsCreateHelperService } from "./repetable-items-create-helper.service";
+import { SufraceOfGroundCreateHelperService } from "./surface-of-ground-create-helper.service";
+import { SurfaceOfPlatformCreateHelperService } from "./surface-of-platform-create-helper.service";
+import { TreeCreateHelperService } from "./tree-create-helper.service";
+
 
 @Injectable({
     providedIn: 'root',
