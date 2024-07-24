@@ -119,8 +119,6 @@ export abstract class GameComponent implements OnInit, OnDestroy {
     Globals.gameState = gameState;
   }
 
-  setControlKeyInterval(): void { }
-
   abstract initValues(): void;
   abstract initControlList(): void;
   abstract drawAll(): void;

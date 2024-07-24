@@ -15,11 +15,8 @@ import { PokemonToChooseTemplateComponent } from './components/pokemon-to-choose
 import { PokemonPanelComponent } from './components/pokemon-panel/pokemon-panel.component';
 import { GameHelperService } from './services/game-helper.service';
 import { PlatformGradientValues } from './models/platform-gradient-values';
-import { MeowthOponent } from './models/meowth-oponent';
-import { OponentEnum } from './models/oponent-enum';
 import { PokemonHero } from './models/pokemon-hero';
 import { PokemonCounter } from './models/pokemon-counter';
-import { KoffingOponent } from './models/koffing-oponent';
 import { GameState } from '../../models/gameState';
 import { KeyboardControlService } from '../../services/controlServices/keyboard-control.service';
 import { Globals } from '../../shared/globals';
@@ -29,6 +26,7 @@ import { PokemonWeapon } from './models/pokemon-weapon';
 import { PokemonDataService } from './services/pokemon-data.service';
 import { PokemonJumpPrepareService } from './services/prepare-services/pokemon-jump-prepare.service';
 import { PokemonShotPrepareService } from './services/prepare-services/pokemon-shot-prepare.service';
+import { PokemonOponentService } from './services/pokemon-oponents.service';
 
 @Component({
   selector: 'app-platform',
@@ -62,7 +60,6 @@ export class PlatformComponent extends GameComponent implements OnDestroy {
   chosenPokemonName = PokemonToChoose.notChoosed;
   pokemonToChooseArray: PokemonToChoose[];
 
-  shotInterval: string | number | NodeJS.Timeout;
   timeInterval: string | number | NodeJS.Timeout;
   gameInterval: string | number | NodeJS.Timeout;
 
@@ -88,7 +85,8 @@ export class PlatformComponent extends GameComponent implements OnDestroy {
     private gameGameStateService: GameStateService,
     private pokemonJumpPrepareService: PokemonJumpPrepareService,
     private pokemonShotPrepareService: PokemonShotPrepareService,
-    private pokemonDataService: PokemonDataService) {
+    private pokemonDataService: PokemonDataService,
+    private pokemonOponentService: PokemonOponentService) {
     super(gameKeyboardControlService, gameGameStateService);
     this.pokemonToChooseArray = this.initPlatformService.getPokemonToChoose();
     this.setKeyboardControlServiceSettings();
@@ -98,7 +96,6 @@ export class PlatformComponent extends GameComponent implements OnDestroy {
     this.clearIntervals();
     clearInterval(this.gameInterval);
     clearInterval(this.timeInterval);
-    clearInterval(this.shotInterval);
     this.pokemonJumpPrepareService.clear();
   }
 
@@ -119,6 +116,7 @@ export class PlatformComponent extends GameComponent implements OnDestroy {
     this.pokemonDataService.initData(this.canvasHelper.canvas, this.chosenPokemonName);
     this.pokemonJumpPrepareService.initJumpService(this.pokemonHero, this.heroMovementSpeed, this.maxJumpHeight);
     this.pokemonShotPrepareService.initShotService(this.pokemonHero, this.weapon, this.heroMovementSpeed);
+    this.pokemonOponentService.initValues();
   }
   initControlList(): void {
     this.controlKeyBoardKeys = this.initPlatformService.controlKeyBoardKey;
@@ -197,7 +195,6 @@ export class PlatformComponent extends GameComponent implements OnDestroy {
         return;
       }
       this.pokeballFunction();
-      this.oponentFunction();
       this.coinFunction();
       this.laserFunction();
     })
@@ -254,55 +251,6 @@ export class PlatformComponent extends GameComponent implements OnDestroy {
     }
   }
 
-  private oponentFunction() {
-    this.oponents.forEach(oponent => {
-      this.checkOponentCatchHeroWithEffects();
-
-      if (!this.drawPlatformService.isImageOnViewPort(oponent)) {
-        return;
-      }
-
-      switch (oponent.oponentType) {
-        case OponentEnum.meowth: {
-          this.meowthEffects(oponent as MeowthOponent);
-          break;
-        }
-        case OponentEnum.koffing: {
-          this.koffingEffects(oponent as KoffingOponent);
-          break;
-        }
-      }
-    })
-  }
-
-  private koffingEffects(oponent: KoffingOponent): void {
-    if (oponent.point.height <= oponent.highestPoint * this.canvasHelper.getCanvasHeight()) {
-      oponent.isGoingUp = false;
-    }
-
-    if (oponent.point.height >= oponent.nearestPoint * this.canvasHelper.getCanvasHeight()) {
-      oponent.isGoingUp = true;
-    }
-    if (oponent.isGoingUp) {
-      oponent.point.height -= 1;
-    }
-    else {
-      oponent.point.height += 1;
-    }
-  }
-
-  private meowthEffects(oponent: MeowthOponent): void {
-    if (!oponent.isOnFloor) {
-      this.movingOponentHorizontallyOnRectangle(oponent, this.platforms);
-    }
-    else {
-      this.movingOponentHorizontallyOnRectangle(oponent, this.grounds);
-    }
-    this.actionAfterOponentHitPlatform(oponent);
-    this.moveOponentHorizontally(oponent);
-
-  }
-
   private checkOponentCatchHeroWithEffects() {
     if (!this.pokemonHero.immune && this.oponents.some(oponent => oponent.visible && this.mathService.isTwoImagesToClose(oponent, this.hero as ImageForCanvas))) {
       if (this.pokemonHero.currentPokemonForm === PokemonForms.basicForm) {
@@ -315,49 +263,6 @@ export class PlatformComponent extends GameComponent implements OnDestroy {
           this.pokemonHero.immune = false;
         }, 2000)
       }
-    }
-  }
-
-  private movingOponentHorizontallyOnRectangle(oponent: MeowthOponent, rectangles: FilledRectangle[]) {
-
-    if (!rectangles.some(rectangle =>
-      this.mathService.isAllImageAndRectangleTangleFromTopSide(oponent, rectangle)
-    )) {
-      oponent.goLeft = !oponent.goLeft;
-      if (oponent.goLeft) {
-        oponent.image.src = oponent.srcLeft;
-      }
-      else {
-        oponent.image.src = oponent.srcRight;
-      }
-    }
-  }
-
-  private actionAfterOponentHitPlatform(oponent: MeowthOponent) {
-    if (Math.floor(oponent.point.width) - oponent.width / 2 === 0 ||
-      this.platforms.some(platform =>
-        this.mathService.isImageAndRectangleTangleFromRightRectangleSide(oponent, platform)
-      )) {
-      oponent.goLeft = false;
-      oponent.image.src = oponent.srcRight;
-    }
-
-    if (Math.floor(oponent.point.width) + oponent.width / 2 === this.canvasHelper.getCanvasWidth() + this.canvasHelper.canvasWidthShift ||
-      this.platforms.some(platform =>
-        this.mathService.isImageAndRectangleTangleFromLeftRectangleSide(oponent, platform)
-      )
-    ) {
-      oponent.goLeft = true;
-      oponent.image.src = oponent.srcLeft;
-    }
-  }
-
-  private moveOponentHorizontally(oponent: MeowthOponent) {
-    if (oponent.goLeft) {
-      oponent.point.width -= 1;
-    }
-    else {
-      oponent.point.width += 1;
     }
   }
 
@@ -387,7 +292,7 @@ export class PlatformComponent extends GameComponent implements OnDestroy {
     return this.drawPlatformService.isHeroOnViewPort(this.pokemonHero);
   }
 
-  
+
   private restoreCanvas(): void {
     this.canvasHelper.ctx.translate(this.canvasHelper.canvasWidthShift, 0);
     this.canvasHelper.canvasWidthShift = 0;
@@ -433,7 +338,7 @@ export class PlatformComponent extends GameComponent implements OnDestroy {
     this.time = this.initPlatformService.initTime();
     this.grounds = this.initPlatformService.initGround();
     this.platforms = this.initPlatformService.initPlatforms();
-    this.oponents = this.initPlatformService.initOponents();
+    this.oponents = this.pokemonDataService.oponents;
     this.pokeballs = this.initPlatformService.initPokeballs();
     this.waters = this.initPlatformService.initWater();
     this.finishImage = this.initPlatformService.initFinishImage();

@@ -25,9 +25,11 @@ export class PokemonDataService {
     oponents: PlatformOponent[];
     weapon: PokemonWeapon;
     hero: PokemonHero;
+    canvas: HTMLCanvasElement;
 
 
     initData(canvas: HTMLCanvasElement, chosenPokemonName: PokemonToChoose): void {
+        this.canvas = canvas;
         this.initPlatformService.createCanvas(canvas);
         this.grounds = this.initPlatformService.initGround();
         this.water = this.initPlatformService.initWater();

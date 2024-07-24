@@ -1,7 +1,6 @@
 import { Injectable } from "@angular/core";
 import { Interval } from "../../shared/intervals/interval";
 import { CanvasHelper } from "../../models/helpers/canvas-helper";
-import { BehaviorSubject } from "rxjs";
 import { MoveableShape } from "../../models/shapes/moveable-shape";
 
 @Injectable({
@@ -14,8 +13,6 @@ export class JumpControlService {
     private maxJumpHeightLocal: number;
     private isFallingDown: boolean;
     maxJumpHeight: number;
-    isJumping$: BehaviorSubject<boolean> = new BehaviorSubject(false);
-    isFallingDown$: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
     setPrematureEndJumpInterval(fn: () => boolean): void {
         this.prematureEndJumpInterval = fn;
@@ -62,12 +59,10 @@ export class JumpControlService {
 
     private switchIsJumping(): void {
         this.isJumping = !this.isJumping;
-        this.isJumping$.next(this.isJumping);
     }
 
     private setFallingDown(isFallingDown: boolean): void {
-        this.isFallingDown = isFallingDown
-        this.isFallingDown$.next(isFallingDown);
+        this.isFallingDown = isFallingDown;
     }
 
     private onEndJumping(): void {
