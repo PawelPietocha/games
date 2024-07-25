@@ -14,6 +14,7 @@ import { KeyboardControlService } from '../../services/controlServices/keyboard-
 import { Globals } from '../../shared/globals';
 import { GameStateService } from '../../services/gameState.service';
 import { RotateImageForCanvas } from '../../models/shapes/rotate-image-for-canvas';
+import { Hero } from '../platform/models/hero';
 
 @Component({
   selector: 'app-dodge-the-balls',
@@ -33,6 +34,8 @@ export class DodgeTheBallsComponent extends GameComponent implements OnDestroy{
 
   maxOponentRadiusForSlider = 72;
   maxOponentRadiusSettedByUser = 36;
+
+  movementSpeed = 5;
 
   scoreInterval: string | number | NodeJS.Timeout;
 
@@ -90,7 +93,7 @@ export class DodgeTheBallsComponent extends GameComponent implements OnDestroy{
   }
 
   private initHeroValue() {
-    this.hero = new ImageForCanvas(
+    this.hero = new Hero(
       "assets/dodge/rocket.png",
       {
         width: 0.05,
@@ -98,6 +101,7 @@ export class DodgeTheBallsComponent extends GameComponent implements OnDestroy{
       },
       0.05,
       0.15,
+      5,
       this.canvasHelper.canvas);
   }
 

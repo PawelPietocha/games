@@ -21,6 +21,7 @@ import { GameStateService } from '../../services/gameState.service';
 import { FilledRectangle } from '../../models/shapes/filledRectangle';
 import { Rectangle } from '../../models/shapes/rectangle';
 import { RotateImageForCanvas } from '../../models/shapes/rotate-image-for-canvas';
+import { Hero } from '../platform/models/hero';
 
 @Component({
   selector: 'app-penalty-shots',
@@ -56,6 +57,7 @@ export class PenaltyShotsComponent extends GameComponent implements OnInit {
 
   ballImg: RotateImageForCanvas;
   shouldBallRotate = false;
+  movementSpeed = 5;
 
   constructor(
     private drawService: DrawService,
@@ -246,7 +248,7 @@ export class PenaltyShotsComponent extends GameComponent implements OnInit {
   }
 
   private initGoalkeeperValues() {
-    this.hero = new ImageForCanvas(
+    this.hero = new Hero(
       "assets/penalty/goalkeepersGloove.png",
       {
         width: 0.5,
@@ -254,6 +256,7 @@ export class PenaltyShotsComponent extends GameComponent implements OnInit {
       },
       0.04,
       0.08,
+      5,
       this.canvasHelper.canvas
     )
   }

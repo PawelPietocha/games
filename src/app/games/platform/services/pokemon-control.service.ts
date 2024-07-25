@@ -4,13 +4,19 @@ import { MathService } from "../../../services/math.service";
 import { ViewportService } from "./viewport.service";
 import { PokemonDataService } from "./pokemon-data.service";
 import { CanvasHelper } from "../../../models/helpers/canvas-helper";
+import { PokemonWeapon } from "../models/pokemon-weapon";
+import { PokemonHero } from "../models/pokemon-hero";
+import { FilledRectangle } from "../../../models/shapes/filledRectangle";
 
 @Injectable({
     providedIn: 'root',
 })
 export class PokemonControlService {
     private canvasHelper: CanvasHelper;
-    private heroMovementSpeed: number;
+    private weapon: PokemonWeapon;
+    private hero: PokemonHero;
+    private platforms: FilledRectangle[];
+
 
     constructor(
         private controlService: KeyboardControlService,
@@ -18,38 +24,40 @@ export class PokemonControlService {
         private viewportService: ViewportService,
         private dataService: PokemonDataService) { }
 
-    prepareService(canvasHelper: CanvasHelper, heroMovementSpeed: number) {
-        this.canvasHelper = canvasHelper;
-        this.heroMovementSpeed = heroMovementSpeed;
+    prepareService() {
+        this.canvasHelper = this.dataService.canvasHelper;
+        this.weapon = this.dataService.weapon;
+        this.hero = this.dataService.hero;
+        this.platforms = this.dataService.platforms;
 
         this.setKeyboardControlServiceSettings();
     }
 
     private arrowRightIsPossible(): boolean {
-        this.dataService.weapon.changeBulletDirection(true);
+        this.weapon.changeBulletDirection(true);
 
-        this.dataService.hero.changeHeroLookDirection(false);
+        this.hero.changeHeroLookDirection(false);
 
-        const heroCollissionWithPlatform = this.dataService.platforms.some(platform =>
-            this.mathService.isImageAndRectangleTangleFromLeftRectangleSide(this.dataService.hero, platform)
+        const heroCollissionWithPlatform = this.platforms.some(platform =>
+            this.mathService.isImageAndRectangleTangleFromLeftRectangleSide(this.hero, platform)
         )
-        if (!heroCollissionWithPlatform && this.viewportService.isImageOnCenterOfViewPort(this.dataService.hero)) {
-            this.viewportService.moveViewPortToRight(this.heroMovementSpeed);
-            this.canvasHelper.canvasWidthShift += this.heroMovementSpeed;
+        if (!heroCollissionWithPlatform && this.viewportService.isImageOnCenterOfViewPort(this.hero)) {
+            this.viewportService.moveViewPortToRight(this.hero.movementSpeed);
+            this.canvasHelper.canvasWidthShift += this.hero.movementSpeed;
         }
         return !heroCollissionWithPlatform;
     }
 
     private arrowLeftIsPossible(): boolean {
-        this.dataService.weapon.changeBulletDirection(false);
+        this.weapon.changeBulletDirection(false);
 
-        this.dataService.hero.changeHeroLookDirection(true);
+        this.hero.changeHeroLookDirection(true);
 
-        const isHeroCollisionWithPlatform = this.dataService.platforms.some(platform =>
-            this.mathService.isImageAndRectangleTangleFromRightRectangleSide(this.dataService.hero, platform)
+        const isHeroCollisionWithPlatform = this.platforms.some(platform =>
+            this.mathService.isImageAndRectangleTangleFromRightRectangleSide(this.hero, platform)
         )
 
-        return this.viewportService.isHeroOnViewPort(this.dataService.hero) && !isHeroCollisionWithPlatform;
+        return this.viewportService.isHeroOnViewPort(this.hero) && !isHeroCollisionWithPlatform;
     }
 
     private setKeyboardControlServiceSettings(): void {

@@ -6,8 +6,8 @@ import { Globals } from "../../shared/globals";
 import { GameState } from "../../models/gameState";
 import { Interval } from "../../shared/intervals/interval";
 import { JumpControlService } from "./jump-control.service";
-import { MoveableShape } from "../../models/shapes/moveable-shape";
 import { ShotControlService } from "./shot-control.service";
+import { Hero } from "../../games/platform/models/hero";
 
 @Injectable({
   providedIn: 'root',
@@ -29,13 +29,9 @@ export class KeyboardControlService {
   setCanvasHelper(canvasHelper: CanvasHelper) {
     this.canvasHelper = canvasHelper;
   }
-  private hero: MoveableShape;
-  setHeroPosition(hero: MoveableShape) {
+  private hero: Hero;
+  setHeroPosition(hero: Hero) {
     this.hero = hero;
-  }
-  private heroMovementSpeed: number;
-  setHeroMovementSpeed(speed: number) {
-    this.heroMovementSpeed = speed;
   }
   private arrowUpIsPossible(): boolean {
     return this.hero.point.height - this.hero.height / 2 > 0;
@@ -81,7 +77,7 @@ export class KeyboardControlService {
     if (found) {
       found.isClicked = isKeyDown;
       if (event.key === ' ') {
-        this.jumpControlService.setJumpInterval(this.hero, this.heroMovementSpeed, this.canvasHelper);
+        this.jumpControlService.setJumpInterval(this.hero, this.canvasHelper);
       }
       if (event.key === 'Control') {
         this.shotControlService.setShotInterval();
@@ -115,25 +111,25 @@ export class KeyboardControlService {
   private controlIntervalAction() {
     if (this.isKeyClicked(ControlKey.arrowUp)) {
       if (this.arrowUpIsPossible()) {
-        this.hero.point.height -= this.heroMovementSpeed;
+        this.hero.point.height -= this.hero.movementSpeed;
       }
     }
 
     if (this.isKeyClicked(ControlKey.arrowDown)) {
       if (this.arrowDownIsPossible()) {
-        this.hero.point.height += this.heroMovementSpeed;
+        this.hero.point.height += this.hero.movementSpeed;
       }
     }
 
     if (this.isKeyClicked(ControlKey.arrowRight)) {
       if (this.arrowRightIsPossible()) {
-        this.hero.point.width += this.heroMovementSpeed;
+        this.hero.point.width += this.hero.movementSpeed;
       }
     }
 
     if (this.isKeyClicked(ControlKey.arrowLeft)) {
       if (this.arrowLeftIsPossible()) {
-        this.hero.point.width -= this.heroMovementSpeed;
+        this.hero.point.width -= this.hero.movementSpeed;
       }
     }
   }

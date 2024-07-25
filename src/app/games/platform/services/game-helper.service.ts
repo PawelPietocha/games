@@ -1,8 +1,7 @@
 import { Injectable } from "@angular/core";
-import { PokemonForms } from "../models/pokemon-forms";
 import { ScoreCollector } from "../models/score-collector.enum";
-import { PokemonSource } from "../models/pokemon-source";
-import { PokemonHero } from "../models/pokemon-hero";
+import { BehaviorSubject } from "rxjs";
+import { EndGame } from "../models/end-game";
 
 @Injectable({
     providedIn: 'root',
@@ -10,45 +9,7 @@ import { PokemonHero } from "../models/pokemon-hero";
 
 export class GameHelperService {
 
-    changeHeroImageLeftRight(
-        isGoingRight: boolean,
-        hero: PokemonHero,
-        pokemonSource: PokemonSource
-    ) {
-        if (isGoingRight) {
-            switch (hero.currentPokemonForm) {
-                case PokemonForms.basicForm: {
-                    hero.image.src = pokemonSource.basicFormSrcRight;
-                    return;
-                }
-                case PokemonForms.middleForm: {
-                    hero.image.src = pokemonSource.middleFormSrcRight;
-                    return;
-                }
-                case PokemonForms.finalForm: {
-                    hero.image.src = pokemonSource.finalFormSrcRight;
-                    return;
-                }
-            }
-        }
-        else {
-            switch (hero.currentPokemonForm) {
-                case PokemonForms.basicForm: {
-                    hero.image.src = pokemonSource.basicFormSrcLeft;
-                    return;
-                }
-                case PokemonForms.middleForm: {
-                    hero.image.src = pokemonSource.middleFormSrcLeft;
-                    return;
-                }
-                case PokemonForms.finalForm: {
-                    hero.image.src = pokemonSource.finalFormSrcLeft;
-                    return;
-                }
-            }
-
-        }
-    }
+    endGame$: BehaviorSubject<EndGame> = new BehaviorSubject<EndGame>({isFinished: false, won: false})
 
     collectScore(item: ScoreCollector): number {
         switch (item) {
@@ -65,9 +26,5 @@ export class GameHelperService {
             case ScoreCollector.catchedCoin:
                 return 20;
         }
-    }
-
-    isHeroReachedFinish(heroWidth: number, finishWidth: number): boolean {
-        return heroWidth + 200 >= finishWidth;
     }
 }

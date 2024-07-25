@@ -6,6 +6,7 @@ import { PlatformOponent } from "../models/platform-oponents";
 import { PokemonWeapon } from "../models/pokemon-weapon";
 import { PokemonToChoose } from "../models/pokemon-to-choose";
 import { PokemonHero } from "../models/pokemon-hero";
+import { CanvasHelper } from "../../../models/helpers/canvas-helper";
 
 @Injectable({
     providedIn: 'root',
@@ -25,12 +26,13 @@ export class PokemonDataService {
     oponents: PlatformOponent[];
     weapon: PokemonWeapon;
     hero: PokemonHero;
-    canvas: HTMLCanvasElement;
+    canvasHelper: CanvasHelper;
+    maxJumpHeight: number;
 
 
-    initData(canvas: HTMLCanvasElement, chosenPokemonName: PokemonToChoose): void {
-        this.canvas = canvas;
-        this.initPlatformService.createCanvas(canvas);
+    initData(canvasHelper: CanvasHelper, chosenPokemonName: PokemonToChoose): void {
+        this.canvasHelper = canvasHelper;
+        this.initPlatformService.createCanvas(canvasHelper.canvas);
         this.grounds = this.initPlatformService.initGround();
         this.water = this.initPlatformService.initWater();
         this.platforms = this.initPlatformService.initPlatforms();
@@ -42,6 +44,7 @@ export class PokemonDataService {
         this.weapon = this.initPlatformService.initWeaponValue(chosenPokemonName);
         this.hero = this.initPlatformService.initHeroValue(chosenPokemonName);
         this.finishImage = this.initPlatformService.initFinishImage();
+        this.maxJumpHeight = this.initPlatformService.maxJumpHeight;
     }
 
     initLevel(level: number): void {

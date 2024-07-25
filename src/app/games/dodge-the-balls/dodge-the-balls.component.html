@@ -7,7 +7,7 @@
     (gameStarted)="startGame()"
     [pausedGameDisabled]="true" 
     (movedToexitToSettings)="exitToSettings()">
-    <app-slider [max]="maxHeroMovementSpeed" [(sliderValue)]="heroMovementSpeed"
+    <app-slider [max]="maxHeroMovementSpeed" [(sliderValue)]="movementSpeed"
         [name]="'Szybkość gracza'"></app-slider>
     <app-slider [max]="maxOponentsMovementSpeedForSlider" [(sliderValue)]="maxOponentsMovementSpeedSettedByUser"
         [name]="'Maksymalna szybkość przeciwników'"></app-slider>

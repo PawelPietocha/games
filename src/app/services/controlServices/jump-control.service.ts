@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { Interval } from "../../shared/intervals/interval";
 import { CanvasHelper } from "../../models/helpers/canvas-helper";
-import { MoveableShape } from "../../models/shapes/moveable-shape";
+import { Hero } from "../../games/platform/models/hero";
 
 @Injectable({
     providedIn: 'root',
@@ -22,9 +22,9 @@ export class JumpControlService {
         this.conditionToPreventGravity = fn;
     }
 
-    setGravityInterval(hero: MoveableShape, heroMovementSpeed: number): Interval {
+    setGravityInterval(hero: Hero): Interval {
         return new Interval(
-            this.gravityIntervalAction.bind(this, hero, heroMovementSpeed),
+            this.gravityIntervalAction.bind(this, hero),
             () => false,
             () => {},
             this.conditionToPreventFallDown.bind(this),
@@ -32,20 +32,20 @@ export class JumpControlService {
         )
     }
 
-    setJumpInterval(hero: MoveableShape, heroMovementSpeed: number, canvasHelper: CanvasHelper): Interval | null {
+    setJumpInterval(hero: Hero, canvasHelper: CanvasHelper): Interval | null {
         if (this.isJumping || this.isFallingDown) {
             return null
         }
-        this.maxJumpHeightLocal = this.maxJumpHeight / heroMovementSpeed;
+        this.maxJumpHeightLocal = this.maxJumpHeight / hero.movementSpeed;
         this.switchIsJumping();
         return new Interval(
-            this.jumpIntervalAction.bind(this, hero, heroMovementSpeed),
+            this.jumpIntervalAction.bind(this, hero),
             this.conditionToEndJumpInterval.bind(this, canvasHelper, this.maxJumpHeightLocal),
             this.onEndJumping.bind(this))
     }
 
-    private jumpIntervalAction(hero: MoveableShape, heroMovementSpeed: number): void {
-        hero.point.height -= heroMovementSpeed;
+    private jumpIntervalAction(hero: Hero): void {
+        hero.point.height -= hero.movementSpeed
         this.loopCount += 1;
     }
 
@@ -70,9 +70,9 @@ export class JumpControlService {
         this.switchIsJumping();
     }
 
-    private gravityIntervalAction(hero: MoveableShape, heroMovementSpeed: number) {
+    private gravityIntervalAction(hero: Hero) {
         this.setFallingDown(true);
-        hero.point.height += heroMovementSpeed;
+        hero.point.height += hero.movementSpeed
     }
 
     private conditionToPreventGravity(): boolean {

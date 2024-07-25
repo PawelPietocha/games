@@ -16,12 +16,14 @@ export class PokemonJumpPrepareService {
     grounds: FilledRectangle[] = [];
     pokemonHero: PokemonHero;
 
-    constructor(private pokemonDataService: PokemonDataService,
+    constructor(
         private jumpService: JumpControlService,
-        private mathService: MathService) { }
+        private mathService: MathService,
+        private dataService: PokemonDataService
+    ) { }
 
-    initJumpService(pokemonHero: PokemonHero, heroMovemenetSpeed: number, maxJumpHeight: number): void{
-        this.initValues(pokemonHero, heroMovemenetSpeed, maxJumpHeight);
+    initJumpService(): void {
+        this.initValues();
     }
 
     prematureEndJumpInterval(): boolean {
@@ -45,13 +47,13 @@ export class PokemonJumpPrepareService {
         this.gravityInterval.clearInterval();
     }
 
-    private initValues(pokemonHero: PokemonHero, heroMovemenetSpeed: number, maxJumpHeight: number) {
-        this.pokemonHero = pokemonHero;
-        this.platforms = this.pokemonDataService.platforms;
-        this.grounds = this.pokemonDataService.grounds;
-        this.jumpService.maxJumpHeight = maxJumpHeight;
+    private initValues() {
+        this.pokemonHero = this.dataService.hero;
+        this.platforms = this.dataService.platforms;
+        this.grounds = this.dataService.grounds;
+        this.jumpService.maxJumpHeight = this.dataService.maxJumpHeight;
         this.jumpService.setPrematureEndJumpInterval(this.prematureEndJumpInterval.bind(this));
         this.jumpService.setConditionToPreventGravity(this.preventFallingDown.bind(this));
-        this.gravityInterval = this.jumpService.setGravityInterval(this.pokemonHero, heroMovemenetSpeed);
+        this.gravityInterval = this.jumpService.setGravityInterval(this.pokemonHero);
     }
 }

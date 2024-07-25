@@ -16,6 +16,8 @@ export class PokemonShotPrepareService {
     shotInterval: Interval;
     platforms: FilledRectangle[] = [];
     oponents: PlatformOponent[] = [];
+    pokemonWeapon: PokemonWeapon;
+    pokemonHero: PokemonHero;
 
     constructor(private pokemonDataService: PokemonDataService,
         private shotService: ShotControlService,
@@ -23,16 +25,16 @@ export class PokemonShotPrepareService {
         private viewportService: ViewportService
     ) { }
 
-    initShotService(pokemonHero: PokemonHero, pokemonWeapon: PokemonWeapon, speed: number): void {
-        this.initValues(pokemonHero, pokemonWeapon, speed);
+    initShotService(): void {
+        this.initValues();
     }
 
-    private isWeaponReady(pokemonWeapon: PokemonWeapon, pokemonHero: PokemonHero): boolean {
-        return pokemonWeapon.isWeaponReady(pokemonHero.currentPokemonForm);
+    private isWeaponReady(): boolean {
+        return this.pokemonWeapon.isWeaponReady(this.pokemonHero.currentPokemonForm);
     }
 
-    private conditionToEndInterval(weapon: PokemonWeapon): boolean {
-        return this.isBulletHitPlatform(weapon) || this.isBulletHitOponent(weapon) || !this.isBulletOnViewPort(weapon)
+    private conditionToEndInterval(): boolean {
+        return this.isBulletHitPlatform(this.pokemonWeapon) || this.isBulletHitOponent(this.pokemonWeapon) || !this.isBulletOnViewPort(this.pokemonWeapon)
     }
 
     private isBulletHitPlatform(weapon: PokemonWeapon): boolean {
@@ -53,27 +55,29 @@ export class PokemonShotPrepareService {
         return false;
     }
 
-    private shotIntervalAction(weapon: PokemonWeapon, speed: number): void {
-        weapon.changeWeaponWidthPosition(speed);
+    private shotIntervalAction(): void {
+        this.pokemonWeapon.changeWeaponWidthPosition(this.pokemonHero.movementSpeed);
     }
 
-    private beforeShotAction(pokemonHero: PokemonHero, pokemonWeapon: PokemonWeapon): void {
-        pokemonWeapon.point = { width: pokemonHero.point.width, height: pokemonHero.point.height };
-        pokemonWeapon.shouldBulletGoingRight = pokemonHero.looksRight;
-        pokemonWeapon.startBullet();
+    private beforeShotAction(): void {
+        this.pokemonWeapon.point = { width: this.pokemonHero.point.width, height: this.pokemonHero.point.height };
+        this.pokemonWeapon.shouldBulletGoingRight = this.pokemonHero.looksRight;
+        this.pokemonWeapon.startBullet();
     }
 
-    private actionAfterInterval(pokemonWeapon: PokemonWeapon) {
-        pokemonWeapon.clearBullet();
+    private actionAfterInterval() {
+        this.pokemonWeapon.clearBullet();
     }
 
-    private initValues(pokemonHero: PokemonHero, pokemonWeapon: PokemonWeapon, speed: number): void {
-        this.shotService.setIsFulfilkedMainCondition(this.isWeaponReady.bind(this, pokemonWeapon, pokemonHero));
-        this.shotService.setConditionToEndShotInterval(this.conditionToEndInterval.bind(this, pokemonWeapon));
-        this.shotService.setBeforeShotAtion(this.beforeShotAction.bind(this, pokemonHero, pokemonWeapon));
-        this.shotService.setActionAfterInterval(this.actionAfterInterval.bind(this, pokemonWeapon));
+    private initValues(): void {
+        this.pokemonHero = this.pokemonDataService.hero;
+        this.pokemonWeapon = this.pokemonDataService.weapon;
+        this.shotService.setIsFulfilkedMainCondition(this.isWeaponReady.bind(this));
+        this.shotService.setConditionToEndShotInterval(this.conditionToEndInterval.bind(this));
+        this.shotService.setBeforeShotAtion(this.beforeShotAction.bind(this));
+        this.shotService.setActionAfterInterval(this.actionAfterInterval.bind(this));
         this.platforms = this.pokemonDataService.platforms;
         this.oponents = this.pokemonDataService.oponents;
-        this.shotService.setShotIntervalAction(this.shotIntervalAction.bind(this, pokemonWeapon, speed));
+        this.shotService.setShotIntervalAction(this.shotIntervalAction.bind(this));
     }
 }

@@ -37,7 +37,7 @@ export class CreatePokemonHelperService {
         this.canvas = canvas;
     }
 
-    initHero(chosenPokemonName: PokemonToChoose): PokemonHero {
+    initHero(chosenPokemonName: PokemonToChoose, movementSpeed: number): PokemonHero {
         const pokemonSource = this.dynamicLevel.pokemonSource.find(pokemon => pokemon.basicName === chosenPokemonName);
         return new PokemonHero(
             pokemonSource.basicFormSrcRight,
@@ -47,6 +47,7 @@ export class CreatePokemonHelperService {
             },
             this.dynamicLevel.heroInitValues.widthMultiplier,
             this.dynamicLevel.heroInitValues.heightMultiplier,
+            movementSpeed,
             pokemonSource,
             this.canvas,
         );

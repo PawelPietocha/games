@@ -1,17 +1,17 @@
 import { PokemonForms } from "./pokemon-forms";
 import { PokemonSource } from "./pokemon-source";
-import { ImageForCanvas } from "../../../models/shapes/imageForCanvas";
 import { Point } from "../../../models/shapes/point";
+import { Hero } from "./hero";
 
-export class PokemonHero extends ImageForCanvas {
+export class PokemonHero extends Hero {
     looksRight: boolean = true;
     opacity: number = 1;
     immune: boolean = false;
     currentPokemonForm: PokemonForms = PokemonForms.basicForm;
     pokemonSource: PokemonSource;
 
-    constructor(src: string, point: Point, width: number, height: number, pokemonSource: PokemonSource, canvas?: HTMLCanvasElement, visible: boolean = true) {
-        super(src, point, width, height, canvas, visible);
+    constructor(src: string, point: Point, width: number, height: number, movementSpeed: number, pokemonSource: PokemonSource, canvas?: HTMLCanvasElement, visible: boolean = true) {
+        super(src, point, width, height, movementSpeed, canvas, visible);
         this.pokemonSource = pokemonSource;
     }
 
@@ -42,15 +42,15 @@ export class PokemonHero extends ImageForCanvas {
 
     devolve() {
         this.image.src = this.pokemonSource.basicFormSrcRight;
-    if (this.currentPokemonForm === PokemonForms.finalForm) {
-      this.width = this.width / 1.69;
-      this.height = this.height / 1.69;
-    }
-    else {
-      this.width = this.width / 1.3;
-      this.height = this.height / 1.3;
-    }
-    this.currentPokemonForm = PokemonForms.basicForm;
+        if (this.currentPokemonForm === PokemonForms.finalForm) {
+            this.width = this.width / 1.69;
+            this.height = this.height / 1.69;
+        }
+        else {
+            this.width = this.width / 1.3;
+            this.height = this.height / 1.3;
+        }
+        this.currentPokemonForm = PokemonForms.basicForm;
     }
 
     private shouldChangeDirection(toLeft: boolean): boolean {
@@ -61,6 +61,10 @@ export class PokemonHero extends ImageForCanvas {
             return false;
         }
         return true;
+    }
+
+    isHeroReachedFinish(heroWidth: number, finishWidth: number): boolean {
+        return heroWidth + 200 >= finishWidth;
     }
 
     private changeDirection(toLeft: boolean) {

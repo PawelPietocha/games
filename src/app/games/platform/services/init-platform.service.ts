@@ -18,6 +18,7 @@ export class InitPlatformService {
     readonly controlKeyBoardKey = [ControlKey.arrowLeft, ControlKey.arrowRight, ControlKey.space, ControlKey.control];
     private dynamicLevel: BaseLevel = new LevelOne();
     nonIntrusiveImages: ImageForCanvas[] = [];
+    maxJumpHeight = 0.32;
 
     constructor(private createPokemonHelperService: CreatePokemonHelperService,
         private shapeCreateHelperService: ShapeCreateHelperService) { }
@@ -53,7 +54,7 @@ export class InitPlatformService {
 
     initHeroValue(chosenPokemonName: PokemonToChoose) {
         this.createPokemonHelperService.dynamicLevel = new LevelOne();
-        return this.createPokemonHelperService.initHero(chosenPokemonName);
+        return this.createPokemonHelperService.initHero(chosenPokemonName, this.heroMovementSpeed);
     }
 
     initWeaponValue(chosenPokemonName: PokemonToChoose) {

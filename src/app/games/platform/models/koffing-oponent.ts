@@ -37,7 +37,7 @@ export class KoffingOponent extends PlatformOponent {
     }
 
     override shouldChangeDirection(dataService: PokemonDataService): boolean {
-       return this.point.height <= this.highestPoint * dataService.canvas.height || 
-        this.point.height >= this.lowestPoint * dataService.canvas.height
+       return this.point.height <= this.highestPoint * dataService.canvasHelper.canvas.height || 
+        this.point.height >= this.lowestPoint * dataService.canvasHelper.canvas.height
     }
 }

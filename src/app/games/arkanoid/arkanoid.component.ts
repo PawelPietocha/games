@@ -48,6 +48,8 @@ export class ArkanoidComponent extends GameComponent implements OnDestroy {
   defaultBallChange = 1;
   defaultBallRadius = 2;
 
+  movementSpeed = 5;
+
   activeBoost: BonusItem = null;
   timeToEndActiveBoost = 10;
   activeBoostInterval: string | number | NodeJS.Timeout;
@@ -324,10 +326,10 @@ export class ArkanoidComponent extends GameComponent implements OnDestroy {
         this.hero.width = this.defaultHeroWidth / 1.5;
         break;
       case BonusItem.heroSpeedUp:
-        this.heroMovementSpeed = this.defaultHeroMovementSpeed * 1.4;
+        this.movementSpeed = this.defaultHeroMovementSpeed * 1.4;
         break;
       case BonusItem.heroSpeedDown:
-        this.heroMovementSpeed = this.defaultHeroMovementSpeed * 0.8;
+        this.movementSpeed = this.defaultHeroMovementSpeed * 0.8;
         break;
       case BonusItem.ballSpeedDown:
         this.defaultBallChange = 0.5;
@@ -347,7 +349,7 @@ export class ArkanoidComponent extends GameComponent implements OnDestroy {
   private setDefaultValues(): void {
     this.hero.width = this.defaultHeroWidth;
     this.defaultBallChange = 1;
-    this.heroMovementSpeed = this.defaultHeroMovementSpeed;
+ //   this.heroMovementSpeed = this.defaultHeroMovementSpeed;
     this.ball.radius = this.defaultBallRadius;
   }
 

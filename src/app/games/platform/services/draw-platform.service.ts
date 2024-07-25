@@ -50,8 +50,8 @@ export class DrawPlaftormService {
         this.drawHero(this.hero);
     }
 
-    prepareService(ctx: CanvasRenderingContext2D) {
-        this.ctx = ctx;
+    prepareService() {
+        this.ctx = this.dataService.canvasHelper.ctx;
         this.initValues();
     }
 

@@ -2,6 +2,7 @@ import { Injectable } from "@angular/core";
 import { Viewport } from "../../../models/viewPort";
 import { FilledRectangle } from "../../../models/shapes/filledRectangle";
 import { ImageForCanvas } from "../../../models/shapes/imageForCanvas";
+import { CanvasHelper } from "../../../models/helpers/canvas-helper";
 
 @Injectable({
     providedIn: 'root',
@@ -11,9 +12,13 @@ export class ViewportService {
     private ctx: CanvasRenderingContext2D;
     private viewPort: Viewport;
 
-    prepareService(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D) {
-        this.canvas = canvas;
-        this.ctx = ctx;
+    constructor() {
+        
+    }
+
+    prepareService(canvasHelper: CanvasHelper) {
+        this.canvas = canvasHelper.canvas;
+        this.ctx = canvasHelper.ctx;
         this.resetViewportToDefaultValues();
     }
 

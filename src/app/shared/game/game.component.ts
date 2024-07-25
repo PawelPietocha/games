@@ -9,6 +9,7 @@ import { KeyboardControlService } from '../../services/controlServices/keyboard-
 import { Globals } from '../globals';
 import { GameStateService } from '../../services/gameState.service';
 import { MoveableShape } from '../../models/shapes/moveable-shape';
+import { Hero } from '../../games/platform/models/hero';
 @Component({
   selector: 'app-game',
   standalone: true,
@@ -22,7 +23,6 @@ export abstract class GameComponent implements OnInit, OnDestroy {
   GameState = GameState;
   Globals = Globals;
   hero: MoveableShape;
-  heroMovementSpeed = 5;
   controlKeyBoardKeys: ControlKey[];
   succesfullyAtempts = 0;
   failedAtempts = 0;
@@ -79,8 +79,7 @@ export abstract class GameComponent implements OnInit, OnDestroy {
     this.changeGameState(GameState.running)
     this.canvasHelper.canvas.focus();
     this.actionAfterStartGame();
-    this.keyboardControlService.setHeroPosition(this.hero);
-    this.keyboardControlService.setHeroMovementSpeed(this.heroMovementSpeed);
+    this.keyboardControlService.setHeroPosition(this.hero as Hero);
     this.initControlList();
     this.keyboardControlService.setCanvasHelper(this.canvasHelper);
     this.keyboardControlService.controlKeyBoardKeys = this.controlKeyBoardKeys;
