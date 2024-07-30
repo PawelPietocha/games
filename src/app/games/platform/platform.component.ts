@@ -174,9 +174,11 @@ export class PlatformComponent extends GameComponent implements OnDestroy {
     this.timeInterval = new Interval(
       () => this.time -= 1,
       () => this.time === 0,
-      () => this.gameHelperService.endGame$.next({isFinished: true, won: false})
+      () => this.gameHelperService.endGame$.next({isFinished: true, won: false}),
+      () => false,
+      () => false,
+      1000
     );
-    this.timeInterval.timeInMiliseconds = 1000;
   }
 
   private restoreCanvas(): void {

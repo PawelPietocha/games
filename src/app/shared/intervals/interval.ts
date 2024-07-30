@@ -3,7 +3,7 @@ import { Globals } from "../globals";
 
 export class Interval {
 
-    timeInMiliseconds: number = 10;
+    timeInMiliseconds: number;
     private interval: string | number | NodeJS.Timeout;
     action(): void { }
     conditionToEnd(): boolean { return false; }
@@ -16,12 +16,14 @@ export class Interval {
         conditionToEnd = () => false,
         actionAfterEndInterval = () => { },
         conditionToPreventAction = () => false,
-        insteadAction = () => {}) {
+        insteadAction = () => { },
+        timeInMiliseconds: number = 10) {
         this.action = action;
         this.conditionToEnd = conditionToEnd;
         this.actionAfterEndInterval = actionAfterEndInterval;
         this.conditionToPreventAction = conditionToPreventAction;
         this.insteadAction = insteadAction;
+        this.timeInMiliseconds = timeInMiliseconds;
         this.startInterval();
     }
 
